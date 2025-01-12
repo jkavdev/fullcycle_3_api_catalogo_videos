@@ -1,4 +1,4 @@
-package br.com.jkavdev.fullcycle.admin.catalogo;
+package br.com.jkavdev.fullcycle.catalogo.infrastructure;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;

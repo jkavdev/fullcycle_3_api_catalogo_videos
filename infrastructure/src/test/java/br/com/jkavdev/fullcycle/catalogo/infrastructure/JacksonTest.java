@@ -1,4 +1,4 @@
-package br.com.jkavdev.fullcycle.admin.catalogo;
+package br.com.jkavdev.fullcycle.catalogo.infrastructure;
 
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.ObjectMapperConfig;
 import org.junit.jupiter.api.Tag;
