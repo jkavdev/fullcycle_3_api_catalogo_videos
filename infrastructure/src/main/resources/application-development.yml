@@ -1,3 +1,6 @@
+graphql:
+  graphiql: true
+
 # o profle de dev eh o mais simples possivel, sem muitas das integracoes  que o projeto possui
 spring:
   autoconfigure:
