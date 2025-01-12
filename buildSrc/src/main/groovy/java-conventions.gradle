@@ -12,6 +12,11 @@ repositories {
 dependencies {
     implementation 'io.vavr:vavr:0.10.4'
 
+    // a versao 2.0 da erro
+    implementation('org.yaml:snakeyaml:2.0') {
+        version { strictly('2.0') }
+    }
+
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.2.0'
 

@@ -6,8 +6,7 @@ plugins {
 group 'br.com.jkavdev.fullcycle.catalogo.domain'
 
 dependencies {
-    // https://github.com/DiUS/java-faker/issues/733 incompatibilidade com o spring 2.7
-    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation('net.datafaker:datafaker:1.9.0')
 }
 
 configurations {

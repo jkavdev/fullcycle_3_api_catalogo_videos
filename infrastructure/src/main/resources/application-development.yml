@@ -1,18 +1,6 @@
 # o profle de dev eh o mais simples possivel, sem muitas das integracoes  que o projeto possui
-
-mysql:
-  username: root
-  password: 123456
-  schema: adm_videos
-  url: localhost:3306
-
 spring:
   autoconfigure:
     exclude:
-      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
       - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
-  jpa:
-    properties:
-      "[hibernate.generate_statistics]": true
-      "[hibernate.format_sql]": true
