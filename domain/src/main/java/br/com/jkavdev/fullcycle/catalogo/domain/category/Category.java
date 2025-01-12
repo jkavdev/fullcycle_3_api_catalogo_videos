@@ -1,5 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.domain.category;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.validation.Error;
 import br.com.jkavdev.fullcycle.catalogo.domain.validation.ValidationHandler;
 
 import java.time.Instant;
@@ -71,11 +72,11 @@ public class Category {
     }
 
     public Category validate(final ValidationHandler aHandler) {
-        if (name == null || name.isEmpty()) {
-            aHandler.append(new br.com.jkavdev.fullcycle.catalogo.domain.validation.Error("'name' should not be empty"));
+        if (name == null || name.trim().isEmpty()) {
+            aHandler.append(new Error("'name' should not be empty"));
         }
-        if (id == null || id.isEmpty()) {
-            aHandler.append(new br.com.jkavdev.fullcycle.catalogo.domain.validation.Error("'id' should not be empty"));
+        if (id == null || id.trim().isEmpty()) {
+            aHandler.append(new Error("'id' should not be empty"));
         }
         return this;
     }

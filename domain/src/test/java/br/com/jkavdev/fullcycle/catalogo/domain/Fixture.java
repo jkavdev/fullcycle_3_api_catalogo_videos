@@ -1,6 +1,10 @@
 package br.com.jkavdev.fullcycle.catalogo.domain;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import net.datafaker.Faker;
+
+import java.util.UUID;
 
 public final class Fixture extends UnitTest {
 
@@ -32,6 +36,34 @@ public final class Fixture extends UnitTest {
 
     public static String checksum() {
         return "03fe62de";
+    }
+
+    public static final class Categories {
+
+        private static Category aulas() {
+            return Category.with(
+                    UUID.randomUUID().toString().replace("-", ""),
+                    "Aulas",
+                    "Conteudo gravado",
+                    true,
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    null
+            );
+        }
+
+        private static Category lives() {
+            return Category.with(
+                    UUID.randomUUID().toString().replace("-", ""),
+                    "Lives",
+                    "Conteudo ao vico",
+                    true,
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    null
+            );
+        }
+
     }
 
 }
