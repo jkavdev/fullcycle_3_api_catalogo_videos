@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
@@ -24,6 +25,9 @@ public class CategoryGraphQLControllerTest {
 
     @MockBean
     private ListCategoryUseCase listCategoryUseCase;
+
+    @MockBean
+    private SaveCategoryUseCase saveCategoryUseCase;
 
     @Autowired
     private GraphQlTester graphql;
