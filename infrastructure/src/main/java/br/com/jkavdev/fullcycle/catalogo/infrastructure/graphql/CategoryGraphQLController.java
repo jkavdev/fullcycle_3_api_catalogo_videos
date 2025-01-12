@@ -44,8 +44,6 @@ public class CategoryGraphQLController {
 
     @MutationMapping
     public Category saveCategory(@Argument final CategoryDto input) {
-        final var aCategory = input.toCategory();
-        saveCategoryUseCase.execute(aCategory);
-        return aCategory;
+        return saveCategoryUseCase.execute(input.toCategory());
     }
 }
