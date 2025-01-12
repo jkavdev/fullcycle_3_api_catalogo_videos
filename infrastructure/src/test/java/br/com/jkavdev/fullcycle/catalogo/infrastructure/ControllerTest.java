@@ -1,9 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure;
 
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.ObjectMapperConfig;
 import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -14,7 +12,6 @@ import java.lang.annotation.*;
 @Inherited
 @ActiveProfiles("test-integration")
 @WebMvcTest
-@Import(ObjectMapperConfig.class)
 @Tag("integrationTests")
 public @interface ControllerTest {
 
