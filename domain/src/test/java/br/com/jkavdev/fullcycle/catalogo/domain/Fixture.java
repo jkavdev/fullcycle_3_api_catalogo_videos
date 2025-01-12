@@ -40,7 +40,7 @@ public final class Fixture extends UnitTest {
 
     public static final class Categories {
 
-        private static Category aulas() {
+        public static Category aulas() {
             return Category.with(
                     UUID.randomUUID().toString().replace("-", ""),
                     "Aulas",
@@ -52,7 +52,7 @@ public final class Fixture extends UnitTest {
             );
         }
 
-        private static Category lives() {
+        public static Category lives() {
             return Category.with(
                     UUID.randomUUID().toString().replace("-", ""),
                     "Lives",
