@@ -16,3 +16,19 @@
 - JDK 17
 - IDE de sua preferência
 - Docker
+
+## Rodando no windows 11
+tem que habilitar o SUDO no windows para que o run.sh funcione
+
+sera dara erro de permissao
+
+````shell
+$ ./run.sh
+Error response from daemon: network with name elastic already exists
+es01
+Sudo is disabled on this machine. To enable it, go to the Developer Settings page in the Settings app
+mkdir: cannot change permissions of '.docker': Permission denied
+mkdir: cannot change permissions of '.docker/es01': Permission denied
+validating C:\Users\jkavdev\Repo\github\jkavdev\fullcycle_3_api_catalogo_videos\sandbox\elk\docker-compose.yml: volumes.es01 Additional property elastic is not allowed
+
+````
