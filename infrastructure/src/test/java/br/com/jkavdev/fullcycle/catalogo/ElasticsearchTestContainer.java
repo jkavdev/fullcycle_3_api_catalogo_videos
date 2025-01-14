@@ -25,10 +25,11 @@ public interface ElasticsearchTestContainer {
 
         public CatalogoElasticsearchContainer() {
             super(DockerImageName.parse(IMAGE).asCompatibleSubstituteFor(COMPATIBLE));
-            this.addFixedExposedPort(9200, 9200);
+            // nao precisou definir a porta, se descomentar da erro de conexao
+//            this.addFixedExposedPort(9200, 9200);
             this.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(CatalogoElasticsearchContainer.class)));
             this.withPassword(CLUSTER_PWD);
-            this.httpWaitStrategy();
+            this.setWaitStrategy(httpWaitStrategy());
 
             final var envMap = this.getEnvMap();
             envMap.put("ES_JAVA_OPTS", "-Xms512m -Xmx512m");
@@ -44,7 +45,5 @@ public interface ElasticsearchTestContainer {
                     .withBasicCredentials(CLUSTER_USER, CLUSTER_PWD)
                     .allowInsecure();
         }
-
     }
-
 }

@@ -1,6 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo;
 
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryElasticsearchRepository;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryRepository;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 
@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Bean;
 public class IntegrationTestConfiguration {
 
     @Bean
-    public CategoryElasticsearchRepository categoryElasticsearchRepository() {
-        return Mockito.mock(CategoryElasticsearchRepository.class);
+    public CategoryRepository categoryRepository() {
+        return Mockito.mock(CategoryRepository.class);
     }
-
 }

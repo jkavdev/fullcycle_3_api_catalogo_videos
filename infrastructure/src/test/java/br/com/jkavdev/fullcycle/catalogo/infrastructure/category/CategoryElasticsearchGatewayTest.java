@@ -1,18 +1,17 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
-import br.com.jkavdev.fullcycle.catalogo.AbstratcElasticsearchTest;
+import br.com.jkavdev.fullcycle.catalogo.AbstractElasticsearchTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CategoryElasticsearchGatewayTest extends AbstratcElasticsearchTest {
+public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
     @Autowired
-    private CategoryElasticsearchRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
     @Test
-    void injectionTest() {
+    public void testInjection() {
         Assertions.assertNotNull(categoryRepository);
     }
-
 }

@@ -25,7 +25,7 @@ import java.util.Collection;
 @ImportTestcontainers(ElasticsearchTestContainer.class)
 @Tag("integrationTests")
 @Testcontainers
-public abstract class AbstratcElasticsearchTest {
+public abstract class AbstractElasticsearchTest {
 
     @Autowired
     private Collection<ElasticsearchRepository<?, ?>> repositories;
