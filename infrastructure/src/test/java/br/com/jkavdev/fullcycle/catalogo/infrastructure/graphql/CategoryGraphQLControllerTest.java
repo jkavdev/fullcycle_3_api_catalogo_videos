@@ -207,9 +207,9 @@ public class CategoryGraphQLControllerTest {
                 "name", expectedName,
                 "description", expectedDescription,
                 "active", expectedActive,
-                "createdAt", expectedCreatedAt,
-                "updatedAt", expectedUpdatedAt,
-                "deletedAt", expectedDeletedAt
+                "createdAt", expectedCreatedAt.toString(),
+                "updatedAt", expectedUpdatedAt.toString(),
+                "deletedAt", expectedDeletedAt.toString()
         );
 
         // category: saveCategory(input: $input) {, dando um alias para o retorno da consulta
