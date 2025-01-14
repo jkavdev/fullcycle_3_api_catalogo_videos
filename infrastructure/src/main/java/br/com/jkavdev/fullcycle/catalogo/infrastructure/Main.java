@@ -1,8 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure;
 
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.WebServerConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.AbstractEnvironment;
