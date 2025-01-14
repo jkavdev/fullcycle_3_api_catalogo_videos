@@ -1,7 +1,7 @@
-package br.com.jkavdev.fullcycle.catalogo.infrastructure;
+package br.com.jkavdev.fullcycle.catalogo;
 
 import org.junit.jupiter.api.Tag;
-import org.springframework.boot.test.autoconfigure.graphql.GraphQlTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -11,10 +11,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @ActiveProfiles("test-integration")
-@GraphQlTest
+@WebMvcTest
 @Tag("integrationTests")
-public @interface GraphQLControllerTest {
+public @interface ControllerTest {
 
-    @AliasFor(annotation = GraphQlTest.class, attribute = "controllers")
+    @AliasFor(annotation = WebMvcTest.class, attribute = "controllers")
     Class<?>[] controllers() default {};
 }
