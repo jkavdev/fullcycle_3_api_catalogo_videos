@@ -56,11 +56,23 @@ public final class Fixture extends UnitTest {
             return Category.with(
                     UUID.randomUUID().toString().replace("-", ""),
                     "Lives",
-                    "Conteudo ao vico",
+                    "Conteudo ao vivo",
                     true,
                     InstantUtils.now(),
                     InstantUtils.now(),
                     null
+            );
+        }
+
+        public static Category talks() {
+            return Category.with(
+                    UUID.randomUUID().toString().replace("-", ""),
+                    "Talks",
+                    "Conteudo ao vivo",
+                    false,
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    InstantUtils.now()
             );
         }
 
