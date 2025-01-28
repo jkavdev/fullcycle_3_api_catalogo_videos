@@ -52,3 +52,12 @@ co.elastic.clients.elasticsearch._types.ElasticsearchException: [es/search] fail
 	at app//br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryElasticsearchGatewayTest.givenValidTerm_whenCallsFindAll_shouldReturnElementsFiltered(CategoryElasticsearchGatewayTest.java:158)
 	at java.base@17.0.13/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 ````
+
+# Possiveis problemas ao rodar a aplicacao
+
+* caso esteja com problemas em rodar a aplicacao e aplicacao nao consegue se conectar no kafka local
+eh porque tem que mapear o `localhost` para esse `kafka` no `C:\Windows\System32\drivers\etc\hosts` do windows
+
+```manifest
+127.0.0.1 kafka
+```
