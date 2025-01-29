@@ -22,8 +22,9 @@ import java.util.Optional;
 @Component
 public class CategoryElasticsearchGateway implements CategoryGateway {
 
-    public static final String NAME_PROP = "name";
-    public static final String KEYWORD = ".keyword";
+    private static final String NAME_PROP = "name";
+    private static final String KEYWORD = ".keyword";
+
     private final CategoryRepository categoryRepository;
     private final SearchOperations searchOperations;
 
@@ -83,7 +84,7 @@ public class CategoryElasticsearchGateway implements CategoryGateway {
 
     private String buildSort(final String sort) {
         if (NAME_PROP.equals(sort)) {
-            return sort;
+            return sort.concat(KEYWORD);
         } else {
             return sort;
         }

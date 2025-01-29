@@ -1,8 +1,10 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,11 +45,13 @@ public enum Json {
                     new Jdk8Module(),
                     afterburnerModule()
             )
-            .propertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
             .build();
 
-    private Module afterburnerModule() {
+    private AfterburnerModule afterburnerModule() {
         var module = new AfterburnerModule();
+        // make Afterburner generate bytecode only for public getters/setter and fields
+        // without this, Java 9+ complains of "Illegal reflective access"
         module.setUseValueClassLoader(false);
         return module;
     }
@@ -59,6 +63,5 @@ public enum Json {
             throw new RuntimeException(ex);
         }
     }
-
 
 }

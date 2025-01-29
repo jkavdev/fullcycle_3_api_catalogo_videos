@@ -6,7 +6,6 @@ public record ValuePayload<T>(
         @JsonProperty("after") T after,
         @JsonProperty("before") T before,
         @JsonProperty("source") Source source,
-        @JsonProperty("operation") Operation operation
+        @JsonProperty("op") Operation operation
 ) {
-
 }

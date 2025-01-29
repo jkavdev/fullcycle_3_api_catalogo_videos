@@ -1,4 +1,4 @@
-elastichsearch:
+elasticsearch:
   uris: http://localhost:9200
   username: elastic
   password: elastic

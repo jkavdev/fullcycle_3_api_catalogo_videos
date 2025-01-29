@@ -1,7 +1,7 @@
-elastichsearch:
-  uris: ${ELASTICHSEARCH_URIS}
-  username: ${ELASTICHSEARCH_USERNAME}
-  password: ${ELASTICHSEARCH_PASSWORD}
+elasticsearch:
+  uris: ${ELASTICSEARCH_URIS}
+  username: ${ELASTICSEARCH_USERNAME}
+  password: ${ELASTICSEARCH_PASSWORD}
 
 keycloak:
   realm: ${KEYCLOAK_REALM}

@@ -30,7 +30,7 @@ import org.springframework.test.context.ActiveProfiles;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractEmbeddedKafkaTest {
 
-    private Producer<String, String> producer;
+    protected Producer<String, String> producer;
 
     @Autowired
     protected EmbeddedKafkaBroker broker;
@@ -48,7 +48,5 @@ public abstract class AbstractEmbeddedKafkaTest {
         producer.close();
     }
 
-    protected Producer<String, String> producer() {
-        return producer;
-    }
 }
+

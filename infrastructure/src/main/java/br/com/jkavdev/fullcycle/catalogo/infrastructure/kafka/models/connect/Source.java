@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record Source(
         @JsonProperty("name") String name,
-        @JsonProperty("table") String table,
-        @JsonProperty("db") String database
+        @JsonProperty("db") String database,
+        @JsonProperty("table") String table
 ) {
 }

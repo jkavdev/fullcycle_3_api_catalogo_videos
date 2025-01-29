@@ -50,7 +50,10 @@ public class CategoryListener {
             containerFactory = "kafkaListenerFactory",
             topics = "${kafka.consumers.categories.topics}",
             groupId = "${kafka.consumers.categories.group-id}",
-            id = "${kafka.consumers.categories.id}"
+            id = "${kafka.consumers.categories.id}",
+            properties = {
+                    "auto.offset.reset=${kafka.consumers.categories.auto-offset-reset}"
+            }
     )
     // configurando as definicoes de retry, e retry sera enviado para uma outra fila
     // tornando o processamento nao bloqueante na fila principal

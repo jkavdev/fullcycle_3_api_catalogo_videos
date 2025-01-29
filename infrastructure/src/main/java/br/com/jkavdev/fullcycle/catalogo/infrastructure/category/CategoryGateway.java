@@ -6,6 +6,5 @@ import java.util.Optional;
 
 public interface CategoryGateway {
 
-    Optional<Category> categoryOfId(String id);
-
+    Optional<Category> categoryOfId(String anId);
 }

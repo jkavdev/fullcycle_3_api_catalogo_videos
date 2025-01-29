@@ -25,14 +25,14 @@ import java.util.stream.Stream;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-@Profile({"!development & !sandbox"})
+@Profile("!development & !sandbox")
 public class SecurityConfig {
 
-    public static final String ROLE_ADMIN = "CATALAGO_ADMIN";
-    public static final String ROLE_VIDEOS = "CATALAGO_VIDEOS";
-    public static final String ROLE_GENRES = "CATALAGO_GENRES";
-    public static final String ROLE_CATEGORIES = "CATALAGO_CATEGORIES";
-    public static final String ROLE_CAST_MEMBERS = "CATALAGO_CAST_MEMBERS";
+    private static final String ROLE_ADMIN = "CATALOGO_ADMIN";
+    private static final String ROLE_CAST_MEMBERS = "CATALOGO_CAST_MEMBERS";
+    private static final String ROLE_CATEGORIES = "CATALOGO_CATEGORIES";
+    private static final String ROLE_GENRES = "CATALOGO_GENRES";
+    private static final String ROLE_VIDEOS = "CATALOGO_VIDEOS";
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
@@ -46,7 +46,7 @@ public class SecurityConfig {
                             .requestMatchers("/categories*").hasAnyRole(ROLE_ADMIN, ROLE_CATEGORIES)
                             .requestMatchers("/genres*").hasAnyRole(ROLE_ADMIN, ROLE_GENRES)
                             .requestMatchers("/videos*").hasAnyRole(ROLE_ADMIN, ROLE_VIDEOS)
-                            .anyRequest().hasAnyRole(ROLE_ADMIN);
+                            .anyRequest().hasRole(ROLE_ADMIN);
                 })
                 .oauth2ResourceServer(oauth -> {
                     oauth.jwt()
@@ -85,11 +85,11 @@ public class SecurityConfig {
 
     static class KeycloakAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
 
-        private static final String ROLES = "roles";
         private static final String REALM_ACCESS = "realm_access";
+        private static final String ROLES = "roles";
         private static final String RESOURCE_ACCESS = "resource_access";
         private static final String SEPARATOR = "_";
-        public static final String ROLE_PREFIX = "ROLE_"; // padrao do spring ter role_ como prefixo
+        private static final String ROLE_PREFIX = "ROLE_"; // padrao do spring ter role_ como prefixo
 
         @Override
         public Collection<GrantedAuthority> convert(final Jwt jwt) {
@@ -103,6 +103,7 @@ public class SecurityConfig {
         }
 
         private Stream<String> extractResourceRoles(final Jwt jwt) {
+
             final Function<Map.Entry<String, Object>, Stream<String>> mapResource =
                     resource -> {
                         final var key = resource.getKey();
@@ -112,11 +113,9 @@ public class SecurityConfig {
                     };
 
             final Function<Set<Map.Entry<String, Object>>, Collection<String>> mapResources =
-                    resources -> {
-                        return resources.stream()
-                                .flatMap(mapResource)
-                                .toList();
-                    };
+                    resources -> resources.stream()
+                            .flatMap(mapResource)
+                            .toList();
 
             return Optional.ofNullable(jwt.getClaimAsMap(RESOURCE_ACCESS))
                     .map(resources -> resources.entrySet())
