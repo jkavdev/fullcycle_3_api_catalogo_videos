@@ -2,6 +2,12 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka;
 
 import br.com.jkavdev.fullcycle.catalogo.application.category.delete.DeleteCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryGateway;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryEvent;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.Operation;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.DltHandler;
@@ -20,14 +26,21 @@ public class CategoryListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(CategoryListener.class);
 
+    private static final TypeReference<MessageValue<CategoryEvent>> CATEGORY_MESSAGE = new TypeReference<>() {
+    };
+
+    private final CategoryGateway categoryGateway;
+
     private final SaveCategoryUseCase saveCategoryUseCase;
 
     private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryListener(
+            final CategoryGateway categoryGateway,
             final SaveCategoryUseCase saveCategoryUseCase,
             final DeleteCategoryUseCase deleteCategoryUseCase
     ) {
+        this.categoryGateway = Objects.requireNonNull(categoryGateway);
         this.saveCategoryUseCase = Objects.requireNonNull(saveCategoryUseCase);
         this.deleteCategoryUseCase = Objects.requireNonNull(deleteCategoryUseCase);
     }
@@ -49,7 +62,20 @@ public class CategoryListener {
     public void onMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
         LOG.info("mensagem recebida do kafka :: partition :: {}, topic :: {}, offset :: {} :::: {}",
                 metadata.partition(), metadata.topic(), metadata.offset(), payload);
-        throw new RuntimeException("fudeuuuuuuu............");
+
+        final var messagePayload = Json.readValue(payload, CATEGORY_MESSAGE).payload();
+        final var op = messagePayload.operation();
+
+        if (Operation.isDelete(op)) {
+            deleteCategoryUseCase.execute(messagePayload.before().id());
+        } else {
+            categoryGateway.categoryOfId(messagePayload.after().id())
+                    .ifPresentOrElse(
+                            saveCategoryUseCase::execute,
+                            () -> LOG.warn("categoria nao foi encontrada :: {}", messagePayload.after().id())
+                    );
+        }
+
     }
 
     // em caso de erro
