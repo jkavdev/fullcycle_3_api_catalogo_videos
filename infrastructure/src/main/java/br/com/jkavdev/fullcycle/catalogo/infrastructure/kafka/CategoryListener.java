@@ -86,6 +86,19 @@ public class CategoryListener {
     public void onDLTMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
         LOG.info("mensagem recebida do kafka do DLT :: partition :: {}, topic :: {}, offset :: {} :::: {}",
                 metadata.partition(), metadata.topic(), metadata.offset(), payload);
+
+        final var messagePayload = Json.readValue(payload, CATEGORY_MESSAGE).payload();
+        final var op = messagePayload.operation();
+
+        if (Operation.isDelete(op)) {
+            deleteCategoryUseCase.execute(messagePayload.before().id());
+        } else {
+            categoryGateway.categoryOfId(messagePayload.after().id())
+                    .ifPresentOrElse(
+                            saveCategoryUseCase::execute,
+                            () -> LOG.warn("categoria nao foi encontrada :: {}", messagePayload.after().id())
+                    );
+        }
     }
 
 }

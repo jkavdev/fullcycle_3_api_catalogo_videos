@@ -17,6 +17,7 @@ public enum Operation {
         this.op = op;
     }
 
+    // o jackson utilizara para deserializar da string para enum
     @JsonCreator
     public static Operation of(final String value) {
         return Arrays.stream(values())
@@ -25,6 +26,7 @@ public enum Operation {
                 .orElse(null);
     }
 
+    // o jackson utilizara a string para serializar o enum ecolhido
     @JsonValue
     public String op() {
         return op;

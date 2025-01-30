@@ -6,3 +6,8 @@ elasticsearch:
 keycloak:
   realm: test
   host: http://test:8443
+
+logging:
+  level:
+    ROOT: WARN
+    br.com.jkavdev.fullcycle.admin.catalogo: WARN
