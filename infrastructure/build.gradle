@@ -4,8 +4,8 @@ plugins {
 //    adicionando plugin que fornece facilidades para rodar a aplicacao
     id 'application'
     //    plugins do spring e spring boot
-    id 'org.springframework.boot' version '3.1.1'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '3.2.2'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group 'br.com.jkavdev.fullcycle.catalogo.infrastructure'
@@ -19,7 +19,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    implementation 'com.google.guava:guava:32.0.1-android'
+    implementation 'com.google.guava:guava:33.3.1-android'
 
     implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.7.0'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'

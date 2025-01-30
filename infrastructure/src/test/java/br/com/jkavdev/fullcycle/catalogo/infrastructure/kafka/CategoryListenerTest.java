@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
 
@@ -50,7 +51,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     private ArgumentCaptor<ConsumerRecordMetadata> metadataCaptor;
 
     @Test
-    public void testCategoriesTopics() throws ExecutionException, InterruptedException {
+    public void testCategoriesTopics() throws ExecutionException, InterruptedException, TimeoutException {
         // given
         final var expectedMainTopic = "adm_videos_mysql.adm_videos.categories";
         final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.categories-retry-0";
@@ -59,7 +60,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
         final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories";
 
         // when
-        final var actualTopics = admin().listTopics().listings().get().stream()
+        final var actualTopics = admin().listTopics().listings().get(10, TimeUnit.SECONDS).stream()
                 .map(TopicListing::name)
                 .toList();
         Assertions.assertTrue(actualTopics.containsAll(List.of(
@@ -72,7 +73,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenInvalidResponsesFromHandlerShouldRetryUntilGoesToDLT() throws InterruptedException {
+    public void givenInvalidResponsesFromHandlerShouldRetryUntilGoesToDLT() throws InterruptedException, ExecutionException, TimeoutException {
         // given
         final var expectedMaxAttemps = 4;
         final var expectedMaxDLTAttemps = 1;
@@ -106,8 +107,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
 
 
         // when
-        producer().send(new ProducerRecord<>(categoryTopic, message));
-        producer().flush();
+        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
 
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
@@ -128,7 +128,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
@@ -151,8 +151,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
-        producer().send(new ProducerRecord<>(categoryTopic, message));
-        producer().flush();
+        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
 
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
@@ -163,7 +162,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
@@ -185,8 +184,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
-        producer().send(new ProducerRecord<>(categoryTopic, message));
-        producer().flush();
+        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
 
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
@@ -197,7 +195,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
@@ -219,8 +217,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
-        producer().send(new ProducerRecord<>(categoryTopic, message));
-        producer().flush();
+        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
 
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
