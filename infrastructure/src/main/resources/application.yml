@@ -20,7 +20,7 @@ kafka:
 logging:
   level:
     ROOT: INFO
-    br.com.jkavdev.fullcycle.admin.catalogo: DEBUG
+    br.com.jkavdev.fullcycle.catalogo: DEBUG
 
 server:
   port: 8080

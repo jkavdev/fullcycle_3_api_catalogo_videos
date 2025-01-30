@@ -26,7 +26,9 @@ public interface ElasticsearchTestContainer {
         public CatalogoElasticsearchContainer() {
             super(DockerImageName.parse(IMAGE).asCompatibleSubstituteFor(COMPATIBLE));
             // nao precisou definir a porta, se descomentar da erro de conexao
-//            this.addFixedExposedPort(9200, 9200);
+            // na verdade precisa sim definir a porta, pois mais pra frente se rodar todos os testes
+            // de uma vez da erro, fiquyei horas pra descobrir essa porra............
+            this.addFixedExposedPort(9200, 9200);
             this.withLogConsumer(new Slf4jLogConsumer(LoggerFactory.getLogger(CatalogoElasticsearchContainer.class)));
             this.withPassword(CLUSTER_PWD);
             this.setWaitStrategy(httpWaitStrategy());
