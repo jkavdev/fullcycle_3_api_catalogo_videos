@@ -10,6 +10,7 @@ import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.Operation;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.ValuePayload;
+import org.apache.kafka.clients.admin.TopicListing;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
@@ -46,8 +50,37 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     private ArgumentCaptor<ConsumerRecordMetadata> metadataCaptor;
 
     @Test
+    public void testCategoriesTopics() throws ExecutionException, InterruptedException {
+        // given
+        final var expectedMainTopic = "adm_videos_mysql.adm_videos.categories";
+        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.categories-retry-0";
+        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.categories-retry-1";
+        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.categories-retry-2";
+        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories";
+
+        // when
+        final var actualTopics = admin().listTopics().listings().get().stream()
+                .map(TopicListing::name)
+                .toList();
+        Assertions.assertTrue(actualTopics.containsAll(List.of(
+                expectedMainTopic,
+                expectedRetry0Topic,
+                expectedRetry1Topic,
+                expectedRetry2Topic,
+                expectedDLTTopic
+        )));
+    }
+
+    @Test
     public void givenInvalidResponsesFromHandlerShouldRetryUntilGoesToDLT() throws InterruptedException {
         // given
+        final var expectedMaxAttemps = 4;
+        final var expectedMaxDLTAttemps = 1;
+        final var expectedMainTopic = "adm_videos_mysql.adm_videos.categories";
+        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.categories-retry-0";
+        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.categories-retry-1";
+        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.categories-retry-2";
+        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories-dlt";
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
 
@@ -79,19 +112,120 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
         // then
-        Mockito.verify(categoryListener, Mockito.times(4))
+        Mockito.verify(categoryListener, Mockito.times(expectedMaxAttemps))
                 .onMessage(ArgumentMatchers.eq(message), metadataCaptor.capture());
 
         final var allMetas = metadataCaptor.getAllValues();
-        Assertions.assertEquals("adm_videos_mysql.adm_videos.categories", allMetas.get(0).topic());
-        Assertions.assertEquals("adm_videos_mysql.adm_videos.categories-retry-0", allMetas.get(1).topic());
-        Assertions.assertEquals("adm_videos_mysql.adm_videos.categories-retry-1", allMetas.get(2).topic());
-        Assertions.assertEquals("adm_videos_mysql.adm_videos.categories-retry-2", allMetas.get(3).topic());
+        Assertions.assertEquals(expectedMainTopic, allMetas.get(0).topic());
+        Assertions.assertEquals(expectedRetry0Topic, allMetas.get(1).topic());
+        Assertions.assertEquals(expectedRetry1Topic, allMetas.get(2).topic());
+        Assertions.assertEquals(expectedRetry2Topic, allMetas.get(3).topic());
 
-        Mockito.verify(categoryListener, Mockito.times(1))
+        Mockito.verify(categoryListener, Mockito.times(expectedMaxDLTAttemps))
                 .onDLTMessage(ArgumentMatchers.eq(message), metadataCaptor.capture());
 
-        Assertions.assertEquals("adm_videos_mysql.adm_videos.categories-dlt", metadataCaptor.getValue().topic());
+        Assertions.assertEquals(expectedDLTTopic, metadataCaptor.getValue().topic());
+    }
+
+    @Test
+    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+        final var aulasEvent = new CategoryEvent(aulas.id());
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.UPDATE)));
+
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return aulas;
+                })
+                .when(saveCategoryUseCase)
+                .execute(ArgumentMatchers.any());
+
+        Mockito.doReturn(Optional.of(aulas))
+                .when(categoryGateway)
+                .categoryOfId(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(categoryTopic, message));
+        producer().flush();
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
+
+        Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
+    }
+
+    @Test
+    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+        final var aulasEvent = new CategoryEvent(aulas.id());
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.CREATE)));
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return aulas;
+                })
+                .when(saveCategoryUseCase)
+                .execute(ArgumentMatchers.any());
+
+        Mockito.doReturn(Optional.of(aulas))
+                .when(categoryGateway)
+                .categoryOfId(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(categoryTopic, message));
+        producer().flush();
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
+
+        Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
+    }
+
+    @Test
+    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+        final var aulasEvent = new CategoryEvent(aulas.id());
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.DELETE)));
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return null;
+                })
+                .when(deleteCategoryUseCase)
+                .execute(ArgumentMatchers.any());
+
+        Mockito.doReturn(Optional.of(aulas))
+                .when(categoryGateway)
+                .categoryOfId(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(categoryTopic, message));
+        producer().flush();
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(deleteCategoryUseCase, Mockito.times(1)).execute(aulas.id());
     }
 
 }
