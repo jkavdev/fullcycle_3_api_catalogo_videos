@@ -57,6 +57,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
         Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
         Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        WireMock.verify(1, WireMock.getRequestedFor(
+                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+        );
     }
 
     // 5XX
@@ -87,6 +91,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
+
+        WireMock.verify(2, WireMock.getRequestedFor(
+                WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+        );
     }
 
     // 404
@@ -112,6 +120,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // then
         Assertions.assertTrue(actualCategory.isEmpty());
+
+        WireMock.verify(1, WireMock.getRequestedFor(
+                WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+        );
     }
 
     // timeout
@@ -149,6 +161,10 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
+
+        WireMock.verify(2, WireMock.getRequestedFor(
+                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+        );
     }
 
 }
