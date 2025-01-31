@@ -5,6 +5,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorExceptio
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import io.github.resilience4j.bulkhead.BulkheadFullException;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -165,6 +166,27 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         WireMock.verify(2, WireMock.getRequestedFor(
                 WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
         );
+    }
+
+    // bulkhead
+    @Test
+    public void givenACategory_whenBulkheadIsFull_shouldReturnError() {
+        // given
+        final var expectedId = "123";
+        final var expecterErrorMessage = "Bulkhead 'categories' is full and does not permit further calls";
+
+        acquireBulkheadPermission(CATEGORY);
+
+        // when
+        final var actualException = Assertions.assertThrows(BulkheadFullException.class,
+                () -> target.getById(expectedId));
+
+        // then
+        // nas configuracoes de testes definimos o maximo de permissoes por chamada com o valor::1
+        // ai ao da errado ja tendo uma permissao, vai da o erro especifico do bulhead
+        Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
+
+        releaseBulkheadPermission(CATEGORY);
     }
 
 }

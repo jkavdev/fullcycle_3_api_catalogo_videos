@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.utils.HttpClient;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -27,6 +28,7 @@ public class CategoryRestClient implements HttpClient {
         return NAMESPACE;
     }
 
+    @Bulkhead(name = NAMESPACE)
     @Retry(name = NAMESPACE)
     public Optional<CategoryDto> getById(final String categoryId) {
         return getGet(categoryId, () -> restClient

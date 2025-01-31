@@ -62,6 +62,15 @@ spring:
           jwk-set-uri: ${keycloak.host}/realms/${keycloak.realm}/protocol/openid-connect/certs
           issuer-uri: ${keycloak.host}/realms/${keycloak.realm}
 
+resilience4j.bulkhead:
+  configs:
+    default:
+      maxConcurrentCalls: 25 # maximo de permissoes a chamadas a um servico
+      maxWaitDuration: 100 # espera maxima quando o maximo de permissoes de chamdas a um servico tiver sido atingida, ate responder ao novo servico se pode ou nao adquirir uma permissao para ser executado
+    instances:
+      categories:
+        baseConfig: default
+
 resilience4j.retry:
   configs:
     default:
