@@ -1,58 +1,30 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
-import br.com.jkavdev.fullcycle.catalogo.IntegrationTestConfiguration;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorException;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.WebServerConfig;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 
-@ActiveProfiles("test-integration")
-@AutoConfigureWireMock(port = 0)
-@EnableAutoConfiguration(
-        exclude = {
-                ElasticsearchRepositoriesAutoConfiguration.class,
-                KafkaAutoConfiguration.class
-        }
-)
-@SpringBootTest(
-        classes = {
-                WebServerConfig.class,
-                IntegrationTestConfiguration.class
-        }
-)
-@Tag("integrationTests")
-public class CategoryRestClientTest {
-
-    @Autowired
-    private ObjectMapper objectMapper;
+public class CategoryRestClientTest extends AbstractRestClientTest {
 
     @Autowired
     private CategoryRestClient target;
 
     // OK
     @Test
-    public void givenACategory_whenReceive200FromServer_shouldBeOk() throws JsonProcessingException {
+    public void givenACategory_whenReceive200FromServer_shouldBeOk() {
         // given
         final var aulas = Fixture.Categories.aulas();
 
-        final var responseBody = objectMapper.writeValueAsString(new CategoryDto(
+        final var responseBody = writeValueAsString(new CategoryDto(
                 aulas.id(),
                 aulas.name(),
                 aulas.description(),
@@ -89,19 +61,21 @@ public class CategoryRestClientTest {
 
     // 5XX
     @Test
-    public void givenACategory_whenReceive5XXFromServer_shouldReturnInternalError() throws JsonProcessingException {
+    public void givenACategory_whenReceive5XXFromServer_shouldReturnInternalError() {
         // given
         final var expectedId = "123";
-        final var expecterErrorMessage = "failed to get category of id %s".formatted(expectedId);
+        final var expectedErrorStatus = 500;
+        final var expecterErrorMessage = "error observed from categories [resourceId::%s] [status::%s]"
+                .formatted(expectedId, expectedErrorStatus);
 
-        final var responseBody = objectMapper.writeValueAsString(Map.of("message", "Internal Server Error"));
+        final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
 
         WireMock.stubFor(
                 WireMock.get(
                                 WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
                         .willReturn(
                                 WireMock.aResponse()
-                                        .withStatus(500)
+                                        .withStatus(expectedErrorStatus)
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                         .withBody(responseBody)
                         )
@@ -117,10 +91,10 @@ public class CategoryRestClientTest {
 
     // 404
     @Test
-    public void givenACategory_whenReceive404NotFoundFromServer_shouldReturnEmpty() throws JsonProcessingException {
+    public void givenACategory_whenReceive404NotFoundFromServer_shouldReturnEmpty() {
         // given
         final var expectedId = "123";
-        final var responseBody = objectMapper.writeValueAsString(Map.of("message", "not found"));
+        final var responseBody = writeValueAsString(Map.of("message", "not found"));
 
         WireMock.stubFor(
                 WireMock.get(
@@ -142,11 +116,11 @@ public class CategoryRestClientTest {
 
     // timeout
     @Test
-    public void givenACategory_whenReceiveTimeout_shouldReturnInternalError() throws JsonProcessingException {
+    public void givenACategory_whenReceiveTimeout_shouldReturnInternalError() {
         // given
         final var aulas = Fixture.Categories.aulas();
 
-        final var responseBody = objectMapper.writeValueAsString(new CategoryDto(
+        final var responseBody = writeValueAsString(new CategoryDto(
                 aulas.id(),
                 aulas.name(),
                 aulas.description(),
@@ -155,7 +129,7 @@ public class CategoryRestClientTest {
                 aulas.updatedAt(),
                 aulas.deletedAt()
         ));
-        final var expecterErrorMessage = "timeout from category of id %s".formatted(aulas.id());
+        final var expecterErrorMessage = "timeout observed from categories [resourceId::%s]".formatted(aulas.id());
 
         WireMock.stubFor(
                 WireMock.get(
