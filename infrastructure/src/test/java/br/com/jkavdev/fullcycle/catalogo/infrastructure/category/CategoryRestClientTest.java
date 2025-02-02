@@ -192,6 +192,23 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
     }
 
     @Test
+    public void givenCalls_whenCBIsOpen_shouldReturnError() {
+        // given
+        transitionToOpenState(CATEGORY);
+        final var expectedId = "123";
+        final var expecterErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+
+        // when
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+
+        // then
+        checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
+        Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
+
+        WireMock.verify(0, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+    }
+
+    @Test
     public void givenServerError_whenIsMoreThanThreshold_shouldOpenCircuitBreaker() {
         // given
         final var expectedId = "123";
@@ -212,13 +229,14 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         );
 
         // when
+        Assertions.assertThrows(InternalErrorException.class, () -> target.getById(expectedId));
         final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
 
         // then
         checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
-        WireMock.verify(1, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+        WireMock.verify(3, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
 }
