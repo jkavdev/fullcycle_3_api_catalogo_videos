@@ -44,7 +44,6 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
                                 WireMock.aResponse()
                                         .withStatus(200)
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                                         .withBody(responseBody)
                         )
         );
@@ -60,6 +59,54 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
         Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
         Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        WireMock.verify(1, WireMock.getRequestedFor(
+                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+        );
+    }
+
+    @Test
+    public void givenACategory_whenReceiveTwoCalls_shouldReturnCachedValue() {
+        // given
+        final var aulas = Fixture.Categories.aulas();
+
+        final var responseBody = writeValueAsString(new CategoryDto(
+                aulas.id(),
+                aulas.name(),
+                aulas.description(),
+                aulas.active(),
+                aulas.createdAt(),
+                aulas.updatedAt(),
+                aulas.deletedAt()
+        ));
+
+        WireMock.stubFor(
+                WireMock.get(
+                                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withStatus(200)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                        .withBody(responseBody)
+                        )
+        );
+
+        // when
+        target.getById(aulas.id()).get();
+        target.getById(aulas.id()).get();
+        final var actualCategory = target.getById(aulas.id()).get();
+
+        // then
+        Assertions.assertEquals(aulas.id(), actualCategory.id());
+        Assertions.assertEquals(aulas.name(), actualCategory.name());
+        Assertions.assertEquals(aulas.description(), actualCategory.description());
+        Assertions.assertEquals(aulas.active(), actualCategory.active());
+        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
+        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
+        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+
+        final var actualCachedValue = cache("admin-categories").get(aulas.id());
+        Assertions.assertEquals(actualCategory, actualCachedValue.get());
 
         WireMock.verify(1, WireMock.getRequestedFor(
                 WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
