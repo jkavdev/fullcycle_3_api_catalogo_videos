@@ -6,6 +6,8 @@ import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -187,6 +189,36 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
         releaseBulkheadPermission(CATEGORY);
+    }
+
+    @Test
+    public void givenServerError_whenIsMoreThanThreshold_shouldOpenCircuitBreaker() {
+        // given
+        final var expectedId = "123";
+        final var expectedErrorStatus = 500;
+        final var expecterErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+
+        final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
+
+        WireMock.stubFor(
+                WireMock.get(
+                                WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                        .willReturn(
+                                WireMock.aResponse()
+                                        .withStatus(expectedErrorStatus)
+                                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                                        .withBody(responseBody)
+                        )
+        );
+
+        // when
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+
+        // then
+        checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
+        Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
+
+        WireMock.verify(1, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
     }
 
 }

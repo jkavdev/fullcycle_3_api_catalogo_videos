@@ -7,6 +7,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,9 @@ public abstract class AbstractRestClientTest {
     @Autowired
     private BulkheadRegistry bulkheadRegistry;
 
+    @Autowired
+    private CircuitBreakerRegistry circuitBreakerRegistry;
+
     // evitando que o contexto de um teste interfira em outro teste, ai limpamos tudo
     @BeforeEach
     void beforeEach() {
@@ -52,12 +58,25 @@ public abstract class AbstractRestClientTest {
         List.of(CATEGORY).forEach(this::resetFaultTolarance);
     }
 
+    protected void checkCircuitBreakerState(final String name, final CircuitBreaker.State expectedState) {
+        final var cb = circuitBreakerRegistry.circuitBreaker(name);
+        Assertions.assertEquals(expectedState, cb.getState());
+    }
+
     protected void acquireBulkheadPermission(final String name) {
         bulkheadRegistry.bulkhead(name).acquirePermission();
     }
 
     protected void releaseBulkheadPermission(final String name) {
         bulkheadRegistry.bulkhead(name).releasePermission();
+    }
+
+    protected void transitionToOpenState(final String name) {
+        circuitBreakerRegistry.circuitBreaker(name).transitionToOpenState();
+    }
+
+    protected void transitionToClosedState(final String name) {
+        circuitBreakerRegistry.circuitBreaker(name).transitionToClosedState();
     }
 
     protected String writeValueAsString(final Object obj) {
@@ -69,7 +88,7 @@ public abstract class AbstractRestClientTest {
     }
 
     private void resetFaultTolarance(final String name) {
-
+        circuitBreakerRegistry.circuitBreaker(name).reset();
     }
 
 }

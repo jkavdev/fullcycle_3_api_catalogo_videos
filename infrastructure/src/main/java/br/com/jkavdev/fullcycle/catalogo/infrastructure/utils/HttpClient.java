@@ -11,7 +11,6 @@ import org.springframework.web.client.RestClient.ResponseSpec.ErrorHandler;
 import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -46,10 +45,13 @@ public interface HttpClient {
             if (cause instanceof HttpConnectTimeoutException) {
                 throw InternalErrorException.with("connectTimeout observed from %s [resourceId::%s]".formatted(namespace(), id));
             }
-            if (cause instanceof HttpTimeoutException || cause instanceof TimeoutException) {
+            if (cause instanceof HttpTimeoutException) {
                 throw InternalErrorException.with("timeout observed from %s [resourceId::%s]".formatted(namespace(), id));
             }
             throw ex;
+        } catch (Throwable e) {
+            // caso um erro generico, encapsula no erro interno
+            throw InternalErrorException.with("unhandled error observed from %s [resourceId::%s]".formatted(namespace(), id));
         }
     }
 
