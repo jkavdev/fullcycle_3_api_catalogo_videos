@@ -7,15 +7,10 @@ keycloak:
   realm: test
   host: http://test:8443
 
-logging:
-  level:
-    ROOT: WARN
-    br.com.jkavdev.fullcycle.catalogo: WARN
-
 rest-client:
   base-url: "http://localhost:${wiremock.server.port:8001}"
   categories:
-    readTimeout: 300
+    read-timeout: 300
 
 resilience4j.bulkhead:
   configs:
@@ -36,3 +31,8 @@ resilience4j.retry:
     default:
       maxAttempts: 2
       waitDuration: 100
+
+logging:
+  level:
+    ROOT: WARN
+    br.com.jkavdev.fullcycle.catalogo: WARN

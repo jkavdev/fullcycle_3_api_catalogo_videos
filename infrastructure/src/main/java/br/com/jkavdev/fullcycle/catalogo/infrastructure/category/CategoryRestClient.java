@@ -37,13 +37,12 @@ public class CategoryRestClient implements HttpClient {
     @CircuitBreaker(name = NAMESPACE)
     @Retry(name = NAMESPACE)
     public Optional<CategoryDto> getById(final String categoryId) {
-        return getGet(categoryId, () -> restClient
-                .get()
+        return doGet(categoryId, () -> restClient.get()
                 .uri("/{id}", categoryId)
                 .retrieve()
                 .onStatus(isNotFound, notFoundHandler(categoryId))
                 .onStatus(is5xx, a5xxHandler(categoryId))
-                .body(CategoryDto.class));
+                .body(CategoryDto.class)
+        );
     }
-
 }

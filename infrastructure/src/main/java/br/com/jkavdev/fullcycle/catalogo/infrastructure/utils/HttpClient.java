@@ -36,7 +36,7 @@ public interface HttpClient {
         };
     }
 
-    default <T> Optional<T> getGet(final String id, final Supplier<T> fn) {
+    default <T> Optional<T> doGet(final String id, final Supplier<T> fn) {
         try {
             return Optional.ofNullable(fn.get());
         } catch (NotFoundException ex) {

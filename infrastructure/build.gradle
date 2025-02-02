@@ -1,9 +1,9 @@
 plugins {
     id 'java-conventions'
     id 'jacoco-report-aggregation'
-//    adicionando plugin que fornece facilidades para rodar a aplicacao
+    // adicionando plugin que fornece facilidades para rodar a aplicacao
     id 'application'
-    //    plugins do spring e spring boot
+    // plugins do spring e spring boot
     id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
 }
@@ -23,7 +23,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    implementation 'com.google.guava:guava:33.3.1-android'
+    implementation 'com.google.guava:guava:33.0.0-jre'
 
     implementation("com.fasterxml.jackson.module:jackson-module-afterburner")
 
@@ -39,13 +39,13 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-webmvc-core:1.7.0'
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
-//    utilizando o servidor undertow, por se mostrar mais performatico que o tomcat
+    // utilizando o servidor undertow, por se mostrar mais performatico que o tomcat
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
 
-    implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-undertow'
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-security'

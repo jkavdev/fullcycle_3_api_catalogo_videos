@@ -61,7 +61,7 @@ public abstract class AbstractRestClientTest {
         WireMock.reset();
         WireMock.resetAllRequests();
         resetAllCaches();
-        List.of(CATEGORY).forEach(this::resetFaultTolarance);
+        List.of(CATEGORY).forEach(this::resetFaultTolerance);
     }
 
     protected Cache cache(final String name) {
@@ -97,12 +97,11 @@ public abstract class AbstractRestClientTest {
         }
     }
 
-    private void resetFaultTolarance(final String name) {
-        circuitBreakerRegistry.circuitBreaker(name).reset();
-    }
-
     private void resetAllCaches() {
         cacheManager.getCacheNames().forEach(name -> cacheManager.getCache(name).clear());
     }
 
+    private void resetFaultTolerance(final String name) {
+        circuitBreakerRegistry.circuitBreaker(name).reset();
+    }
 }

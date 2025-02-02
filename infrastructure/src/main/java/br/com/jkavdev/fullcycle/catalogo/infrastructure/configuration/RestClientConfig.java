@@ -12,18 +12,17 @@ public class RestClientConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "rest-client.categories")
-    public RestClientProperties categoryRestProperties() {
+    public RestClientProperties categoryRestClientProperties() {
         return new RestClientProperties();
     }
 
     @Bean
-    public RestClient categoryHttpClient(
-            final RestClientProperties categoryRestProperties
-    ) {
+    public RestClient categoryHttpClient(final RestClientProperties properties) {
         final var factory = new JdkClientHttpRequestFactory();
-        factory.setReadTimeout(categoryRestProperties.readTimeout());
+        factory.setReadTimeout(properties.readTimeout());
+
         return RestClient.builder()
-                .baseUrl(categoryRestProperties().baseUrl())
+                .baseUrl(properties.baseUrl())
                 .requestFactory(factory)
                 .build();
     }

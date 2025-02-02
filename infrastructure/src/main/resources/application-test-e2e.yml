@@ -14,7 +14,7 @@ logging:
 rest-client:
   base-url: "http://localhost:${wiremock.server.port:8001}"
   categories:
-    readTimeout: 300
+    read-timeout: 300
 
 resilience4j.bulkhead:
   configs:
