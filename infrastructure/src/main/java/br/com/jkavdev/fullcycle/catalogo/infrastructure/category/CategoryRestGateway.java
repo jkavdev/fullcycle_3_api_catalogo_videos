@@ -1,5 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.utils.HttpClient;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
@@ -15,13 +16,13 @@ import java.util.Optional;
 
 @Component
 @CacheConfig(cacheNames = "admin-categories")
-public class CategoryRestClient implements HttpClient {
+public class CategoryRestGateway implements CategoryGateway, HttpClient {
 
     public static final String NAMESPACE = "categories";
 
     private final RestClient restClient;
 
-    public CategoryRestClient(
+    public CategoryRestGateway(
             final RestClient categoryHttpClient
     ) {
         this.restClient = Objects.requireNonNull(categoryHttpClient);
@@ -36,13 +37,13 @@ public class CategoryRestClient implements HttpClient {
     @Bulkhead(name = NAMESPACE)
     @CircuitBreaker(name = NAMESPACE)
     @Retry(name = NAMESPACE)
-    public Optional<CategoryDto> getById(final String categoryId) {
+    public Optional<Category> categoryOfId(final String categoryId) {
         return doGet(categoryId, () -> restClient.get()
                 .uri("/{id}", categoryId)
                 .retrieve()
                 .onStatus(isNotFound, notFoundHandler(categoryId))
                 .onStatus(is5xx, a5xxHandler(categoryId))
                 .body(CategoryDto.class)
-        );
+        ).map(CategoryDto::toCategory);
     }
 }

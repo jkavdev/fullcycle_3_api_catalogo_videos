@@ -1,7 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure;
 
 import br.com.jkavdev.fullcycle.catalogo.IntegrationTestConfiguration;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryRestClient;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryRestGateway;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.WebServerConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +41,7 @@ import java.util.List;
 @Tag("integrationTests")
 public abstract class AbstractRestClientTest {
 
-    protected static final String CATEGORY = CategoryRestClient.NAMESPACE;
+    protected static final String CATEGORY = CategoryRestGateway.NAMESPACE;
 
     @Autowired
     private ObjectMapper objectMapper;

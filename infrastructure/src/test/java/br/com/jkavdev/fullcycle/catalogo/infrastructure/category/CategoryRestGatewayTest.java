@@ -16,10 +16,10 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-public class CategoryRestClientTest extends AbstractRestClientTest {
+public class CategoryRestGatewayTest extends AbstractRestClientTest {
 
     @Autowired
-    private CategoryRestClient target;
+    private CategoryRestGateway target;
 
     // OK
     @Test
@@ -49,7 +49,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         );
 
         // when
-        final var actualCategory = target.getById(aulas.id()).get();
+        final var actualCategory = target.categoryOfId(aulas.id()).get();
 
         // then
         Assertions.assertEquals(aulas.id(), actualCategory.id());
@@ -92,9 +92,9 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         );
 
         // when
-        target.getById(aulas.id()).get();
-        target.getById(aulas.id()).get();
-        final var actualCategory = target.getById(aulas.id()).get();
+        target.categoryOfId(aulas.id()).get();
+        target.categoryOfId(aulas.id()).get();
+        final var actualCategory = target.categoryOfId(aulas.id()).get();
 
         // then
         Assertions.assertEquals(aulas.id(), actualCategory.id());
@@ -137,7 +137,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // when
         final var actualException = Assertions.assertThrows(InternalErrorException.class,
-                () -> target.getById(expectedId));
+                () -> target.categoryOfId(expectedId));
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
@@ -166,7 +166,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         );
 
         // when
-        final var actualCategory = target.getById(expectedId);
+        final var actualCategory = target.categoryOfId(expectedId);
 
         // then
         Assertions.assertTrue(actualCategory.isEmpty());
@@ -207,7 +207,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // when
         final var actualException = Assertions.assertThrows(InternalErrorException.class,
-                () -> target.getById(aulas.id()));
+                () -> target.categoryOfId(aulas.id()));
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
@@ -228,7 +228,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
 
         // when
         final var actualException = Assertions.assertThrows(BulkheadFullException.class,
-                () -> target.getById(expectedId));
+                () -> target.categoryOfId(expectedId));
 
         // then
         // nas configuracoes de testes definimos o maximo de permissoes por chamada com o valor::1
@@ -246,7 +246,7 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         final var expecterErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
 
         // when
-        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.categoryOfId(expectedId));
 
         // then
         checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
@@ -276,8 +276,8 @@ public class CategoryRestClientTest extends AbstractRestClientTest {
         );
 
         // when
-        Assertions.assertThrows(InternalErrorException.class, () -> target.getById(expectedId));
-        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.getById(expectedId));
+        Assertions.assertThrows(InternalErrorException.class, () -> target.categoryOfId(expectedId));
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.categoryOfId(expectedId));
 
         // then
         checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
