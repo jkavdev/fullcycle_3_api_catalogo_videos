@@ -1,13 +1,16 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.GetClientCredencials;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Categories;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.utils.HttpClient;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -22,10 +25,14 @@ public class CategoryRestGateway implements CategoryGateway, HttpClient {
 
     private final RestClient restClient;
 
+    private final GetClientCredencials getClientCredencials;
+
     public CategoryRestGateway(
-            final RestClient categoryHttpClient
+            @Categories final RestClient categoryHttpClient,
+            final GetClientCredencials getClientCredencials
     ) {
         this.restClient = Objects.requireNonNull(categoryHttpClient);
+        this.getClientCredencials = Objects.requireNonNull(getClientCredencials);
     }
 
     @Override
@@ -38,8 +45,10 @@ public class CategoryRestGateway implements CategoryGateway, HttpClient {
     @CircuitBreaker(name = NAMESPACE)
     @Retry(name = NAMESPACE)
     public Optional<Category> categoryOfId(final String categoryId) {
+        final var token = getClientCredencials.retrive();
         return doGet(categoryId, () -> restClient.get()
                 .uri("/{id}", categoryId)
+                .header(HttpHeaders.AUTHORIZATION, "bearer " + token)
                 .retrieve()
                 .onStatus(isNotFound, notFoundHandler(categoryId))
                 .onStatus(is5xx, a5xxHandler(categoryId))
