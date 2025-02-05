@@ -14,7 +14,7 @@ public class DeleteCategoryUseCase extends UnityUseCase<String> {
     }
 
     @Override
-    public void execute(String anId) {
+    public void execute(final String anId) {
         if (anId == null) {
             return;
         }

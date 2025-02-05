@@ -1,5 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.domain;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberType;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import net.datafaker.Faker;
@@ -76,6 +78,39 @@ public final class Fixture extends UnitTest {
             );
         }
 
+    }
+
+    public static final class CastMembers {
+
+        private static final CastMember WESLEY =
+                CastMember.with(
+                        UUID.randomUUID().toString(),
+                        "Wesley FullCycle",
+                        CastMemberType.ACTOR,
+                        InstantUtils.now(),
+                        InstantUtils.now()
+                );
+
+        private static final CastMember GABRIEL =
+                CastMember.with(
+                        UUID.randomUUID().toString(),
+                        "Gabriel FullCycle",
+                        CastMemberType.ACTOR,
+                        InstantUtils.now(),
+                        InstantUtils.now()
+                );
+
+        public static CastMemberType type() {
+            return FAKER.options().option(CastMemberType.values());
+        }
+
+        public static CastMember wesley() {
+            return CastMember.with(WESLEY);
+        }
+
+        public static CastMember gabriel() {
+            return CastMember.with(GABRIEL);
+        }
     }
 
 }

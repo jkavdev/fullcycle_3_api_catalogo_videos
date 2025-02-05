@@ -18,7 +18,7 @@ public class SaveCategoryUseCase extends UseCase<Category, Category> {
     }
 
     @Override
-    public Category execute(Category aCategory) {
+    public Category execute(final Category aCategory) {
         if (aCategory == null) {
             throw NotificationException.with(new Error("'aCategory' cannot be null"));
         }
