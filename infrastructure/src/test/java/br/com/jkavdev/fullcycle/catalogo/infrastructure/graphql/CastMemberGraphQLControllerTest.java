@@ -3,12 +3,18 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 import br.com.jkavdev.fullcycle.catalogo.GraphQLControllerTest;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryOutput;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberType;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.AdditionalAnswers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -17,12 +23,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
 import java.util.List;
+import java.util.Map;
 
 @GraphQLControllerTest(controllers = CastMemberGraphQLController.class)
 public class CastMemberGraphQLControllerTest {
 
     @MockBean
     private ListCastMemberUseCase listCastMemberUseCase;
+
+    @MockBean
+    private SaveCastMemberUseCase saveCastMemberUseCase;
 
     @Autowired
     private GraphQlTester graphql;
@@ -188,6 +198,72 @@ public class CastMemberGraphQLControllerTest {
         Assertions.assertEquals(expectedSort, actualQuery.sort());
         Assertions.assertEquals(expectedDirection, actualQuery.direction());
         Assertions.assertEquals(expectedSearch, actualQuery.terms());
+    }
+
+    @Test
+    public void givenCastMemberInputWhenCallsSaveCastMemberMutationShouldPersistAndReturnIt() {
+        // given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedName = "qualquerNome";
+        final var expectedType = CastMemberType.ACTOR;
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
+
+        final var input = Map.of(
+                "id", expectedId,
+                "name", expectedName,
+                "type", expectedType,
+                "createdAt", expectedCreatedAt.toString(),
+                "updatedAt", expectedUpdatedAt.toString()
+        );
+
+        // category: saveCategory(input: $input) {, dando um alias para o retorno da consulta
+//        category: saveCategory(input: $input) {
+//            id
+//                    name
+//            description
+//        }
+        // indicando apenas alguns campos como retorno
+        final var query = """
+                mutation SaveCastMember($input: CastMemberInput!){
+                    castMember: saveCastMember(input: $input) {
+                        id
+                        name
+                        type
+                        createdAt
+                        updatedAt
+                    }
+                }
+                """;
+
+        // retornando o proprio argumento como retorno do metodo
+        Mockito.doAnswer(AdditionalAnswers.returnsFirstArg())
+                .when(saveCastMemberUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        graphql.document(query)
+                .variable("input", input)
+                .execute()
+                // da pra testar o retorno do graphql
+                .path("castMember.id").entity(String.class).isEqualTo(expectedId)
+                .path("castMember.name").entity(String.class).isEqualTo(expectedName)
+                .path("castMember.type").entity(CastMemberType.class).isEqualTo(expectedType)
+                .path("castMember.createdAt").entity(String.class).isEqualTo(expectedCreatedAt.toString())
+                .path("castMember.updatedAt").entity(String.class).isEqualTo(expectedUpdatedAt.toString())
+        ;
+
+        // then
+        final var captor = ArgumentCaptor.forClass(CastMember.class);
+        Mockito.verify(saveCastMemberUseCase, Mockito.times(1))
+                .execute(captor.capture());
+
+        final var actualMember = captor.getValue();
+        Assertions.assertEquals(expectedId, actualMember.id());
+        Assertions.assertEquals(expectedName, actualMember.name());
+        Assertions.assertEquals(expectedType, actualMember.type());
+        Assertions.assertEquals(expectedCreatedAt, actualMember.createdAt());
+        Assertions.assertEquals(expectedUpdatedAt, actualMember.updatedAt());
     }
 
 }

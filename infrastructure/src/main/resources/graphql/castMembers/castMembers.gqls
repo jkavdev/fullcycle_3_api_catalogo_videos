@@ -10,7 +10,7 @@ extend type Query {
 
 extend type Mutation {
 
-    saveCastmember(input: CastMemberInput!): CastMember!
+    saveCastMember(input: CastMemberInput!): CastMember!
 }
 
 """ A CastMember """

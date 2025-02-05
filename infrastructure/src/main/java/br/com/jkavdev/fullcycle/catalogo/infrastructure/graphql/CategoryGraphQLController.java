@@ -18,6 +18,7 @@ import java.util.Objects;
 public class CategoryGraphQLController {
 
     private final ListCategoryUseCase listCategoryUseCase;
+
     private final SaveCategoryUseCase saveCategoryUseCase;
 
     public CategoryGraphQLController(
