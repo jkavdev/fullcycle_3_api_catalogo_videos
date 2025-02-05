@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -217,13 +218,6 @@ public class CastMemberGraphQLControllerTest {
                 "updatedAt", expectedUpdatedAt.toString()
         );
 
-        // category: saveCategory(input: $input) {, dando um alias para o retorno da consulta
-//        category: saveCategory(input: $input) {
-//            id
-//                    name
-//            description
-//        }
-        // indicando apenas alguns campos como retorno
         final var query = """
                 mutation SaveCastMember($input: CastMemberInput!){
                     castMember: saveCastMember(input: $input) {
@@ -236,7 +230,6 @@ public class CastMemberGraphQLControllerTest {
                 }
                 """;
 
-        // retornando o proprio argumento como retorno do metodo
         Mockito.doAnswer(AdditionalAnswers.returnsFirstArg())
                 .when(saveCastMemberUseCase)
                 .execute(ArgumentMatchers.any());
@@ -245,12 +238,11 @@ public class CastMemberGraphQLControllerTest {
         graphql.document(query)
                 .variable("input", input)
                 .execute()
-                // da pra testar o retorno do graphql
                 .path("castMember.id").entity(String.class).isEqualTo(expectedId)
                 .path("castMember.name").entity(String.class).isEqualTo(expectedName)
                 .path("castMember.type").entity(CastMemberType.class).isEqualTo(expectedType)
-                .path("castMember.createdAt").entity(String.class).isEqualTo(expectedCreatedAt.toString())
-                .path("castMember.updatedAt").entity(String.class).isEqualTo(expectedUpdatedAt.toString())
+                .path("castMember.createdAt").entity(Instant.class).isEqualTo(expectedCreatedAt)
+                .path("castMember.updatedAt").entity(Instant.class).isEqualTo(expectedUpdatedAt)
         ;
 
         // then

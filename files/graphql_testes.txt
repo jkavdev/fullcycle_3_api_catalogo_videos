@@ -64,4 +64,17 @@ mutation SaveCategory($input: CategoryInput!) {
 	  "updatedAt": "2025-01-12T23:16:01.940Z",
 	  "deletedAt": "2025-01-12T23:16:01.940Z"
 	}
-}  
+}
+
+// salvar cast member
+mutation MyMutation {
+  saveCastMember(
+    input: {id: "2121", name: "2121", type: "DIRECTOR", updatedAt: "2025-02-04T03:47:18Z", createdAt: "2025-02-04T03:47:18Z"}
+  ) {
+    createdAt
+    id
+    name
+    type
+    updatedAt
+  }
+}
