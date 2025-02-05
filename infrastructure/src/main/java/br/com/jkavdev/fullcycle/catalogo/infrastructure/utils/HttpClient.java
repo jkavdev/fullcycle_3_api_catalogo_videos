@@ -65,7 +65,7 @@ public interface HttpClient {
             return ex;
         }
         // caso um erro generico, encapsula no erro interno
-        throw InternalErrorException.with("unhandled error observed from %s [resourceId::%s]".formatted(namespace(), id));
+        return InternalErrorException.with("unhandled error observed from %s [resourceId::%s]".formatted(namespace(), id));
     }
 
 }
