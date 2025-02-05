@@ -12,7 +12,7 @@ extend type Mutation {
 
     saveCastmember(input: CastMemberInput!): CastMember!
 }
-ó
+
 """ A CastMember """
 type CastMember {
     id: ID!
