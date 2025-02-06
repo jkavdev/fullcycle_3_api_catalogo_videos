@@ -113,16 +113,36 @@ public final class Fixture {
             return FAKER.options().option(CastMemberType.values());
         }
 
+        // criando os cast members novamente, devido os cast members estaticos estarem muito perto, entao a data do instant utils
+        // praticamente a mesma, baguncando os testes unitarios
         public static CastMember wesley() {
-            return CastMember.with(WESLEY);
+            return CastMember.with(
+                    UUID.randomUUID().toString(),
+                    "Wesley FullCycle",
+                    CastMemberType.ACTOR,
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
         }
 
         public static CastMember gabriel() {
-            return CastMember.with(GABRIEL);
+            return CastMember.with(
+                    UUID.randomUUID().toString(),
+                    "Gabriel FullCycle",
+                    CastMemberType.ACTOR,
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
         }
 
         public static CastMember leonan() {
-            return CastMember.with(LEONAN);
+            return CastMember.with(
+                    UUID.randomUUID().toString(),
+                    "Leonan FullCycle",
+                    CastMemberType.DIRECTOR,
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
         }
     }
 
