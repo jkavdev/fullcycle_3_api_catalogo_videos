@@ -88,7 +88,7 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
 
         Mockito.doAnswer(t -> {
                     latch.countDown();
-                    return null;
+                    throw new RuntimeException("FUDEUUUUUUUUUUUUUUUUU!");
                 })
                 .when(deleteCastMemberUseCase)
                 .execute(ArgumentMatchers.any());
@@ -122,101 +122,87 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertEquals(expectedDLTTopic, metadataCaptor.getValue().topic());
     }
 
-//    @Test
-//    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
-//        // given
-//        final var aulas = Fixture.Categories.aulas();
-//        final var aulasEvent = new CategoryEvent(aulas.id());
-//
-//        final var message =
-//                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.UPDATE)));
-//
-//        final var latch = new CountDownLatch(1);
-//
-//        Mockito.doAnswer(t -> {
-//                    latch.countDown();
-//                    return aulas;
-//                })
-//                .when(saveCategoryUseCase)
-//                .execute(ArgumentMatchers.any());
-//
-//        Mockito.doReturn(Optional.of(aulas))
-//                .when(categoryGateway)
-//                .categoryOfId(ArgumentMatchers.any());
-//
-//        // when
-//        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
-//
-//        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
-//
-//        // then
-//        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
-//
-//        Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
-//    }
-//
-//    @Test
-//    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
-//        // given
-//        final var aulas = Fixture.Categories.aulas();
-//        final var aulasEvent = new CategoryEvent(aulas.id());
-//
-//        final var message =
-//                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.CREATE)));
-//
-//        final var latch = new CountDownLatch(1);
-//
-//        Mockito.doAnswer(t -> {
-//                    latch.countDown();
-//                    return aulas;
-//                })
-//                .when(saveCategoryUseCase)
-//                .execute(ArgumentMatchers.any());
-//
-//        Mockito.doReturn(Optional.of(aulas))
-//                .when(categoryGateway)
-//                .categoryOfId(ArgumentMatchers.any());
-//
-//        // when
-//        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
-//
-//        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
-//
-//        // then
-//        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
-//
-//        Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
-//    }
-//
-//    @Test
-//    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
-//        // given
-//        final var aulas = Fixture.Categories.aulas();
-//        final var aulasEvent = new CategoryEvent(aulas.id());
-//
-//        final var message =
-//                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.DELETE)));
-//
-//        final var latch = new CountDownLatch(1);
-//
-//        Mockito.doAnswer(t -> {
-//                    latch.countDown();
-//                    return null;
-//                })
-//                .when(deleteCategoryUseCase)
-//                .execute(ArgumentMatchers.any());
-//
-//        Mockito.doReturn(Optional.of(aulas))
-//                .when(categoryGateway)
-//                .categoryOfId(ArgumentMatchers.any());
-//
-//        // when
-//        producer().send(new ProducerRecord<>(categoryTopic, message)).get(10, TimeUnit.SECONDS);
-//
-//        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
-//
-//        // then
-//        Mockito.verify(deleteCategoryUseCase, Mockito.times(1)).execute(aulas.id());
-//    }
+    @Test
+    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
+        // given
+        final var expectedMember = Fixture.CastMembers.gabriel();
+        final var expectedEvent = CastMemberEvent.from(expectedMember);
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.UPDATE)));
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return expectedMember;
+                })
+                .when(saveCastMemberUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(castmemberTopic, message)).get(10, TimeUnit.SECONDS);
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(saveCastMemberUseCase, Mockito.times(1))
+                .execute(Mockito.refEq(expectedMember, "createdAt", "updatedAt"));
+    }
+
+    @Test
+    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
+        // given
+        final var expectedMember = Fixture.CastMembers.gabriel();
+        final var expectedEvent = CastMemberEvent.from(expectedMember);
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.CREATE)));
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return expectedMember;
+                })
+                .when(saveCastMemberUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(castmemberTopic, message)).get(10, TimeUnit.SECONDS);
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(saveCastMemberUseCase, Mockito.times(1))
+                .execute(Mockito.refEq(expectedMember, "createdAt", "updatedAt"));
+    }
+
+    @Test
+    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
+        // given
+        final var expectedMember = Fixture.CastMembers.gabriel();
+        final var expectedEvent = new CategoryEvent(expectedMember.id());
+
+        final var message =
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.DELETE)));
+
+        final var latch = new CountDownLatch(1);
+
+        Mockito.doAnswer(t -> {
+                    latch.countDown();
+                    return null;
+                })
+                .when(deleteCastMemberUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        producer().send(new ProducerRecord<>(castmemberTopic, message)).get(10, TimeUnit.SECONDS);
+
+        Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
+
+        // then
+        Mockito.verify(deleteCastMemberUseCase, Mockito.times(1)).execute(expectedMember.id());
+    }
 
 }
