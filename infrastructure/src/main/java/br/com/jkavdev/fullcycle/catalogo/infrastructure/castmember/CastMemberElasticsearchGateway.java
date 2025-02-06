@@ -4,44 +4,43 @@ import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberDocument;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class CastMemberInMemoryGateway implements CastMemberGateway {
+public class CastMemberElasticsearchGateway implements CastMemberGateway {
 
-    private final Map<String, CastMember> db;
+    private final CastMemberRepository castMemberRepository;
 
-    public CastMemberInMemoryGateway() {
-        this.db = new ConcurrentHashMap<>();
+    public CastMemberElasticsearchGateway(
+            final CastMemberRepository castMemberRepository
+    ) {
+        this.castMemberRepository = Objects.requireNonNull(castMemberRepository);
     }
 
     @Override
-    public CastMember save(CastMember aMember) {
-        db.put(aMember.id(), aMember);
+    public CastMember save(final CastMember aMember) {
+        castMemberRepository.save(CastMemberDocument.from(aMember));
         return aMember;
     }
 
     @Override
     public void deleteById(String anId) {
-        db.remove(anId);
+
     }
 
     @Override
     public Optional<CastMember> findById(String anId) {
-        return Optional.ofNullable(db.get(anId));
+        return Optional.empty();
     }
 
     @Override
     public Pagination<CastMember> findAll(CastMemberSearchQuery aQuery) {
-        return new Pagination<>(
-                aQuery.page(),
-                aQuery.perPage(),
-                db.size(),
-                db.values().stream().toList()
-        );
+        return null;
     }
+
 }
