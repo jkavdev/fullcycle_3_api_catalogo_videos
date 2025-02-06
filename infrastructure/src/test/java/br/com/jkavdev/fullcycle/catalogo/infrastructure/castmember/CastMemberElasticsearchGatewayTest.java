@@ -68,39 +68,38 @@ public class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTes
         // then
         Assertions.assertDoesNotThrow(() -> castMemberGateway.deleteById(expectedId));
     }
-//
-//    @Test
-//    public void givenValidId_whenCallsFindById_shouldRetrieveIt() {
-//        // given
-//        final var expectedMember = Fixture.Categories.talks();
-//
-//        castMemberRepository.save(CastMemberDocument.from(expectedMember));
-//
-//        final var expectedId = expectedMember.id();
-//        final var actualOutput = castMemberRepository.findById(expectedId)
-//                .orElseThrow();
-//
-//        // when
-//        castMemberGateway.deleteById(expectedId);
-//
-//        // then
-//        Assertions.assertEquals(expectedMember.id(), actualOutput.id());
-//        Assertions.assertEquals(expectedMember.name(), actualOutput.name());
-//        Assertions.assertEquals(expectedMember.description(), actualOutput.description());
-//        Assertions.assertEquals(expectedMember.createdAt(), actualOutput.createdAt());
-//        Assertions.assertEquals(expectedMember.updatedAt(), actualOutput.updatedAt());
-//        Assertions.assertEquals(expectedMember.deletedAt(), actualOutput.deletedAt());
-//    }
-//
-//    @Test
-//    public void givenValidId_whenCallsFindById_shouldReturnEmpy() {
-//        // given
-//        final var expectedId = "qualquerId";
-//
-//        // when
-//        // then
-//        Assertions.assertTrue(castMemberGateway.findById(expectedId).isEmpty());
-//    }
+
+    @Test
+    public void givenValidId_whenCallsFindById_shouldRetrieveIt() {
+        // given
+        final var expectedMember = Fixture.CastMembers.gabriel();
+
+        castMemberRepository.save(CastMemberDocument.from(expectedMember));
+
+        final var expectedId = expectedMember.id();
+        final var actualOutput = castMemberRepository.findById(expectedId)
+                .orElseThrow();
+
+        // when
+        castMemberGateway.deleteById(expectedId);
+
+        // then
+        Assertions.assertEquals(expectedMember.id(), actualOutput.id());
+        Assertions.assertEquals(expectedMember.name(), actualOutput.name());
+        Assertions.assertEquals(expectedMember.type(), actualOutput.type());
+        Assertions.assertEquals(expectedMember.createdAt(), actualOutput.createdAt());
+        Assertions.assertEquals(expectedMember.updatedAt(), actualOutput.updatedAt());
+    }
+
+    @Test
+    public void givenValidId_whenCallsFindById_shouldReturnEmpty() {
+        // given
+        final var expectedId = "qualquerId";
+
+        // when
+        // then
+        Assertions.assertTrue(castMemberGateway.findById(expectedId).isEmpty());
+    }
 //
 //    @Test
 //    public void givenEmptyCategories_whenCallsFindAll_shouldReturnEmpyList() {

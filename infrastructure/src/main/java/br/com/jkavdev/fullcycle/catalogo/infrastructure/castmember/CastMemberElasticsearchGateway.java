@@ -34,8 +34,9 @@ public class CastMemberElasticsearchGateway implements CastMemberGateway {
     }
 
     @Override
-    public Optional<CastMember> findById(String anId) {
-        return Optional.empty();
+    public Optional<CastMember> findById(final String anId) {
+        return castMemberRepository.findById(anId)
+                .map(CastMemberDocument::toCastMember);
     }
 
     @Override
