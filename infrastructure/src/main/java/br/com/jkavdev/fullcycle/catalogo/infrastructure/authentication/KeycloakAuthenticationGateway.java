@@ -19,7 +19,7 @@ public class KeycloakAuthenticationGateway implements AuthenticationGateway {
     private final String tokenUri;
 
     public KeycloakAuthenticationGateway(
-            @Keycloak RestClient restClient,
+            @Keycloak final RestClient restClient,
             final KeycloakProperties properties
     ) {
         this.restClient = Objects.requireNonNull(restClient);

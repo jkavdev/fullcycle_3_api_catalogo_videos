@@ -21,6 +21,7 @@ kafka:
       concurrency: 1
       id: kafka-listener-categories
       topics: adm_videos.adm_videos.categories
+#      topics: adm_videos_mysql.adm_videos.categories # rever
       group-id: catalogo-service
 
 keycloak:

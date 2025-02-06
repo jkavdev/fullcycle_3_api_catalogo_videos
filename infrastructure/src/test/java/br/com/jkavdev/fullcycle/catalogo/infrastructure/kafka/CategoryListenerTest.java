@@ -26,9 +26,7 @@ import org.springframework.kafka.listener.adapter.ConsumerRecordMetadata;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
 
@@ -42,7 +40,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     private CategoryGateway categoryGateway;
 
     @SpyBean
-    CategoryListener categoryListener;
+    private CategoryListener categoryListener;
 
     @Value("${kafka.consumers.categories.topics}")
     private String categoryTopic;
@@ -51,13 +49,13 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     private ArgumentCaptor<ConsumerRecordMetadata> metadataCaptor;
 
     @Test
-    public void testCategoriesTopics() throws ExecutionException, InterruptedException, TimeoutException {
+    public void testCategoriesTopics() throws Exception {
         // given
         final var expectedMainTopic = "adm_videos_mysql.adm_videos.categories";
         final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.categories-retry-0";
         final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.categories-retry-1";
         final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.categories-retry-2";
-        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories";
+        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories-dlt";
 
         // when
         final var actualTopics = admin().listTopics().listings().get(10, TimeUnit.SECONDS).stream()
@@ -73,7 +71,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenInvalidResponsesFromHandlerShouldRetryUntilGoesToDLT() throws InterruptedException, ExecutionException, TimeoutException {
+    public void givenInvalidResponsesFromHandlerShouldRetryUntilGoesToDLT() throws Exception {
         // given
         final var expectedMaxAttemps = 4;
         final var expectedMaxDLTAttemps = 1;
@@ -82,6 +80,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
         final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.categories-retry-1";
         final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.categories-retry-2";
         final var expectedDLTTopic = "adm_videos_mysql.adm_videos.categories-dlt";
+
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
 
@@ -128,14 +127,13 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
+    public void givenUpdateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
 
         final var message =
                 Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(aulasEvent, aulasEvent, aSource(), Operation.UPDATE)));
-
 
         final var latch = new CountDownLatch(1);
 
@@ -162,7 +160,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
+    public void givenCreateOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());
@@ -195,7 +193,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     }
 
     @Test
-    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws InterruptedException, ExecutionException, TimeoutException {
+    public void givenDeleteOperationWhenProcessGoesOKShouldEndTheOperation() throws Exception {
         // given
         final var aulas = Fixture.Categories.aulas();
         final var aulasEvent = new CategoryEvent(aulas.id());

@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Objects;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class CastMemberUseCasesConfig {
 
     private final CastMemberGateway castMemberGateway;

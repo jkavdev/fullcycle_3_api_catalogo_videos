@@ -9,7 +9,6 @@ extend type Query {
 }
 
 extend type Mutation {
-
     saveCastMember(input: CastMemberInput!): CastMember!
 }
 
@@ -22,7 +21,7 @@ type CastMember {
     updatedAt: String!
 }
 
-""" A input to persist a Category """
+""" A input to persist a CastMember """
 input CastMemberInput {
     id: ID!
     name: String!

@@ -60,12 +60,11 @@ public abstract class AbstractEmbeddedKafkaTest {
         return admin;
     }
 
-    public Producer<String, String> producer() {
+    protected Producer<String, String> producer() {
         return producer;
     }
 
     protected Source aSource() {
-        return new Source("admin_mysql", "admin_categolo", "categories");
+        return new Source("admin_mysql", "admin_catalogo", "categories");
     }
 }
-
