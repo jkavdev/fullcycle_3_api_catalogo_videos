@@ -8,7 +8,7 @@ import net.datafaker.Faker;
 
 import java.util.UUID;
 
-public final class Fixture extends UnitTest {
+public final class Fixture {
 
     private static final Faker FAKER = new Faker();
 
@@ -100,6 +100,15 @@ public final class Fixture extends UnitTest {
                         InstantUtils.now()
                 );
 
+        private static final CastMember LEONAN =
+                CastMember.with(
+                        UUID.randomUUID().toString(),
+                        "Leonan FullCycle",
+                        CastMemberType.DIRECTOR,
+                        InstantUtils.now(),
+                        InstantUtils.now()
+                );
+
         public static CastMemberType type() {
             return FAKER.options().option(CastMemberType.values());
         }
@@ -110,6 +119,10 @@ public final class Fixture extends UnitTest {
 
         public static CastMember gabriel() {
             return CastMember.with(GABRIEL);
+        }
+
+        public static CastMember leonan() {
+            return CastMember.with(LEONAN);
         }
     }
 

@@ -6,7 +6,7 @@ public interface ValidationHandler {
 
     ValidationHandler append(Error anError);
 
-    ValidationHandler append(ValidationHandler handler);
+    ValidationHandler append(ValidationHandler anHandler);
 
     <T> T validate(Validation<T> aValidation);
 

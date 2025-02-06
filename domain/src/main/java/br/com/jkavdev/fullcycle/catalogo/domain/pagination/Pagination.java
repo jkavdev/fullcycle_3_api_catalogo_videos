@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public record Pagination<T>(
-        Metada metadata,
+        Metadata metadata,
         List<T> data
 ) {
 
@@ -14,7 +14,7 @@ public record Pagination<T>(
             final long total,
             final List<T> data
     ) {
-        this(new Metada(currentPage, perPage, total), data);
+        this(new Metadata(currentPage, perPage, total), data);
     }
 
     public <R> Pagination<R> map(final Function<T, R> mapper) {

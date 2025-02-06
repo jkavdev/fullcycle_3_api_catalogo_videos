@@ -36,7 +36,8 @@ public class CastMember {
             final String name,
             final CastMemberType type,
             final Instant createdAt,
-            final Instant udpatedAt) {
+            final Instant udpatedAt
+    ) {
         return new CastMember(id, name, type, createdAt, udpatedAt);
     }
 

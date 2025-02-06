@@ -1,6 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.domain.pagination;
 
-public record Metada(
+public record Metadata(
         int currentPage,
         int perPage,
         long total

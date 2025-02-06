@@ -8,17 +8,11 @@ import java.time.Instant;
 public class Category {
 
     private final String id;
-
     private final String name;
-
     private final String description;
-
     private final boolean active;
-
     private final Instant createdAt;
-
     private final Instant updatedAt;
-
     private final Instant deletedAt;
 
     private Category(
@@ -41,8 +35,8 @@ public class Category {
 
     public static Category with(
             final String anId,
-            final String aName,
-            final String aDescription,
+            final String name,
+            final String description,
             final boolean active,
             final Instant createdAt,
             final Instant updatedAt,
@@ -50,8 +44,8 @@ public class Category {
     ) {
         return new Category(
                 anId,
-                aName,
-                aDescription,
+                name,
+                description,
                 active,
                 createdAt,
                 updatedAt,
@@ -72,10 +66,10 @@ public class Category {
     }
 
     public Category validate(final ValidationHandler aHandler) {
-        if (name == null || name.trim().isEmpty()) {
+        if (name == null || name.isBlank()) {
             aHandler.append(new Error("'name' should not be empty"));
         }
-        if (id == null || id.trim().isEmpty()) {
+        if (id == null || id.isBlank()) {
             aHandler.append(new Error("'id' should not be empty"));
         }
         return this;

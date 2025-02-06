@@ -4,8 +4,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.validation.handler.Notification;
 
 public class NotificationException extends DomainException {
 
-    public NotificationException(final String aMessage, final Notification aNotification) {
-        super(aMessage, aNotification.getErrors());
+    public NotificationException(final String aMessage, final Notification notification) {
+        super(aMessage, notification.getErrors());
     }
 
     public static NotificationException with(final String message, final Notification notification) {
