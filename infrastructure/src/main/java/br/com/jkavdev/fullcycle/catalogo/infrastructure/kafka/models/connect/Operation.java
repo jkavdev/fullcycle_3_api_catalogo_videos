@@ -32,6 +32,10 @@ public enum Operation {
         return op;
     }
 
+    public boolean isDelete() {
+        return isDelete(this);
+    }
+
     public static boolean isDelete(final Operation operation) {
         return DELETE == operation;
     }
