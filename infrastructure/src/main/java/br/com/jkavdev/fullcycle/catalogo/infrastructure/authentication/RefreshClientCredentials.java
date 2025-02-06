@@ -1,7 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication;
 
-public interface GetClientCredencials {
+public interface RefreshClientCredentials {
 
-    String retrive();
+    void refresh();
 
 }

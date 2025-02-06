@@ -1,7 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.GetClientCredencials;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.GetClientCredentials;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Categories;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.utils.HttpClient;
@@ -25,14 +25,14 @@ public class CategoryRestGateway implements CategoryGateway, HttpClient {
 
     private final RestClient restClient;
 
-    private final GetClientCredencials getClientCredencials;
+    private final GetClientCredentials getClientCredentials;
 
     public CategoryRestGateway(
             @Categories final RestClient categoryHttpClient,
-            final GetClientCredencials getClientCredencials
+            final GetClientCredentials getClientCredentials
     ) {
         this.restClient = Objects.requireNonNull(categoryHttpClient);
-        this.getClientCredencials = Objects.requireNonNull(getClientCredencials);
+        this.getClientCredentials = Objects.requireNonNull(getClientCredentials);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CategoryRestGateway implements CategoryGateway, HttpClient {
     @CircuitBreaker(name = NAMESPACE)
     @Retry(name = NAMESPACE)
     public Optional<Category> categoryOfId(final String categoryId) {
-        final var token = getClientCredencials.retrive();
+        final var token = getClientCredentials.retrive();
         return doGet(categoryId, () -> restClient.get()
                 .uri("/{id}", categoryId)
                 .header(HttpHeaders.AUTHORIZATION, "bearer " + token)

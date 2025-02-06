@@ -7,10 +7,10 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 @Component
-public class ClientCredenctialsManager implements GetClientCredencials, RefreshClientCredencials {
+public class ClientCredentialsManager implements GetClientCredentials, RefreshClientCredentials {
 
-    private static final AtomicReferenceFieldUpdater<ClientCredenctialsManager, ClientCredentials> UPDATER
-            = AtomicReferenceFieldUpdater.newUpdater(ClientCredenctialsManager.class, ClientCredentials.class, "credentials");
+    private static final AtomicReferenceFieldUpdater<ClientCredentialsManager, ClientCredentials> UPDATER
+            = AtomicReferenceFieldUpdater.newUpdater(ClientCredentialsManager.class, ClientCredentials.class, "credentials");
 
     private volatile ClientCredentials credentials;
 
@@ -18,7 +18,7 @@ public class ClientCredenctialsManager implements GetClientCredencials, RefreshC
 
     private final KeycloakProperties keycloakProperties;
 
-    public ClientCredenctialsManager(
+    public ClientCredentialsManager(
             final AuthenticationGateway authenticationGateway,
             final KeycloakProperties keycloakProperties
     ) {

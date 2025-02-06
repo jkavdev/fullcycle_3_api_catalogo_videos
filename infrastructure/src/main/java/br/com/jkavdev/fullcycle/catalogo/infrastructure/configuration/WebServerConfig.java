@@ -1,6 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration;
 
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.RefreshClientCredencials;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.RefreshClientCredentials;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,10 +17,10 @@ public class WebServerConfig {
     @Bean
     @Profile("!test-integration & !test-e2e")
     ApplicationListener<ContextRefreshedEvent> refreshClientCrendentials(
-            final RefreshClientCredencials refreshClientCredencials
+            final RefreshClientCredentials refreshClientCredentials
     ) {
         return event -> {
-            refreshClientCredencials.refresh();
+            refreshClientCredentials.refresh();
         };
     }
 

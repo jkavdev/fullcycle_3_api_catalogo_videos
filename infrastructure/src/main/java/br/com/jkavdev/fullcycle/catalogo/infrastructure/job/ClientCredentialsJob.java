@@ -1,6 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.job;
 
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.RefreshClientCredencials;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.RefreshClientCredentials;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ClientCredentialsJob {
 
-    private final RefreshClientCredencials refreshClientCredencials;
+    private final RefreshClientCredentials refreshClientCredentials;
 
-    public ClientCredentialsJob(final RefreshClientCredencials refreshClientCredencials) {
-        this.refreshClientCredencials = Objects.requireNonNull(refreshClientCredencials);
+    public ClientCredentialsJob(final RefreshClientCredentials refreshClientCredentials) {
+        this.refreshClientCredentials = Objects.requireNonNull(refreshClientCredentials);
     }
 
     @Scheduled(
@@ -21,7 +21,7 @@ public class ClientCredentialsJob {
             timeUnit = TimeUnit.MINUTES,
             initialDelay = 3
     )
-    public void refreshClientCredencials() {
-        refreshClientCredencials.refresh();
+    public void refreshClientCredentials() {
+        refreshClientCredentials.refresh();
     }
 }

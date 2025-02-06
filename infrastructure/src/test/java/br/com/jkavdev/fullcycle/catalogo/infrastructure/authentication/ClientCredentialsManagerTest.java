@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
-class ClientCredenctialsManagerTest {
+class ClientCredentialsManagerTest {
 
     @Mock
     private KeycloakProperties keycloakProperties;
@@ -21,7 +21,7 @@ class ClientCredenctialsManagerTest {
     private AuthenticationGateway authenticationGateway;
 
     @InjectMocks
-    private ClientCredenctialsManager manager;
+    private ClientCredentialsManager manager;
 
     @Test
     public void givenValidAuthenticationResult_whenCallsRefresh_shouldCreateCredentials() {
@@ -59,7 +59,7 @@ class ClientCredenctialsManagerTest {
         final var expectedClientSecret = "qualquerClientSecret";
 
         ReflectionTestUtils.setField(manager, "credentials",
-                new ClientCredenctialsManager.ClientCredentials(expectedClientId, "acc", "ref"));
+                new ClientCredentialsManager.ClientCredentials(expectedClientId, "acc", "ref"));
 
         Mockito.doReturn(expectedClientId)
                 .when(keycloakProperties)
@@ -76,7 +76,7 @@ class ClientCredenctialsManagerTest {
         manager.refresh();
 
         final var actualCredentials =
-                (ClientCredenctialsManager.ClientCredentials) ReflectionTestUtils.getField(manager, "credentials");
+                (ClientCredentialsManager.ClientCredentials) ReflectionTestUtils.getField(manager, "credentials");
 
         // then
         Assertions.assertEquals(expectedAccessToken, actualCredentials.accessToken());
@@ -92,7 +92,7 @@ class ClientCredenctialsManagerTest {
         final var expectedClientSecret = "qualquerClientSecret";
 
         ReflectionTestUtils.setField(manager, "credentials",
-                new ClientCredenctialsManager.ClientCredentials(expectedClientId, "acc", "ref"));
+                new ClientCredentialsManager.ClientCredentials(expectedClientId, "acc", "ref"));
 
         Mockito.doReturn(expectedClientId)
                 .when(keycloakProperties)
@@ -113,7 +113,7 @@ class ClientCredenctialsManagerTest {
         manager.refresh();
 
         final var actualCredentials =
-                (ClientCredenctialsManager.ClientCredentials) ReflectionTestUtils.getField(manager, "credentials");
+                (ClientCredentialsManager.ClientCredentials) ReflectionTestUtils.getField(manager, "credentials");
 
         // then
         Assertions.assertEquals(expectedAccessToken, actualCredentials.accessToken());
