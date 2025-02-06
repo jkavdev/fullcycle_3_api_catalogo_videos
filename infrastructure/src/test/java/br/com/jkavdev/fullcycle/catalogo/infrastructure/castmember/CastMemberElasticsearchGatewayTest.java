@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember;
 
 import br.com.jkavdev.fullcycle.catalogo.AbstractElasticsearchTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,54 +42,54 @@ public class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTes
         Assertions.assertEquals(expectedMember.updatedAt(), actualMember.updatedAt());
     }
 
-//    @Test
-//    public void givenValidId_whenCallsDeleteById_shouldDeleteIt() {
-//        // given
-//        final var expectedCategory = Fixture.Categories.aulas();
-//
-//        categoryRepository.save(CategoryDocument.from(expectedCategory));
-//
-//        final var expectedId = expectedCategory.id();
-//        Assertions.assertTrue(categoryRepository.existsById(expectedId));
-//
-//        // when
-//        castMemberGateway.deleteById(expectedId);
-//
-//        // then
-//        Assertions.assertFalse(categoryRepository.existsById(expectedId));
-//    }
-//
-//    @Test
-//    public void givenAnInvalidId_whenCallsDeleteById_shouldBeOk() {
-//        // given
-//        final var expectedId = "qualquerId";
-//
-//        // when
-//        // then
-//        Assertions.assertDoesNotThrow(() -> castMemberGateway.deleteById(expectedId));
-//    }
+    @Test
+    public void givenValidId_whenCallsDeleteById_shouldDeleteIt() {
+        // given
+        final var expectedMember = Fixture.CastMembers.gabriel();
+
+        castMemberRepository.save(CastMemberDocument.from(expectedMember));
+
+        final var expectedId = expectedMember.id();
+        Assertions.assertTrue(castMemberRepository.existsById(expectedId));
+
+        // when
+        castMemberGateway.deleteById(expectedId);
+
+        // then
+        Assertions.assertFalse(castMemberRepository.existsById(expectedId));
+    }
+
+    @Test
+    public void givenAnInvalidId_whenCallsDeleteById_shouldBeOk() {
+        // given
+        final var expectedId = "qualquerId";
+
+        // when
+        // then
+        Assertions.assertDoesNotThrow(() -> castMemberGateway.deleteById(expectedId));
+    }
 //
 //    @Test
 //    public void givenValidId_whenCallsFindById_shouldRetrieveIt() {
 //        // given
-//        final var expectedCategory = Fixture.Categories.talks();
+//        final var expectedMember = Fixture.Categories.talks();
 //
-//        categoryRepository.save(CategoryDocument.from(expectedCategory));
+//        castMemberRepository.save(CastMemberDocument.from(expectedMember));
 //
-//        final var expectedId = expectedCategory.id();
-//        final var actualOutput = categoryRepository.findById(expectedId)
+//        final var expectedId = expectedMember.id();
+//        final var actualOutput = castMemberRepository.findById(expectedId)
 //                .orElseThrow();
 //
 //        // when
 //        castMemberGateway.deleteById(expectedId);
 //
 //        // then
-//        Assertions.assertEquals(expectedCategory.id(), actualOutput.id());
-//        Assertions.assertEquals(expectedCategory.name(), actualOutput.name());
-//        Assertions.assertEquals(expectedCategory.description(), actualOutput.description());
-//        Assertions.assertEquals(expectedCategory.createdAt(), actualOutput.createdAt());
-//        Assertions.assertEquals(expectedCategory.updatedAt(), actualOutput.updatedAt());
-//        Assertions.assertEquals(expectedCategory.deletedAt(), actualOutput.deletedAt());
+//        Assertions.assertEquals(expectedMember.id(), actualOutput.id());
+//        Assertions.assertEquals(expectedMember.name(), actualOutput.name());
+//        Assertions.assertEquals(expectedMember.description(), actualOutput.description());
+//        Assertions.assertEquals(expectedMember.createdAt(), actualOutput.createdAt());
+//        Assertions.assertEquals(expectedMember.updatedAt(), actualOutput.updatedAt());
+//        Assertions.assertEquals(expectedMember.deletedAt(), actualOutput.deletedAt());
 //    }
 //
 //    @Test
@@ -231,9 +232,9 @@ public class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTes
 //    }
 //
 //    private void mockCategories() {
-//        categoryRepository.save(CategoryDocument.from(Fixture.Categories.aulas()));
-//        categoryRepository.save(CategoryDocument.from(Fixture.Categories.lives()));
-//        categoryRepository.save(CategoryDocument.from(Fixture.Categories.talks()));
+//        castMemberRepository.save(CastMemberDocument.from(Fixture.Categories.aulas()));
+//        castMemberRepository.save(CastMemberDocument.from(Fixture.Categories.lives()));
+//        castMemberRepository.save(CastMemberDocument.from(Fixture.Categories.talks()));
 //    }
 
 }

@@ -29,8 +29,8 @@ public class CastMemberElasticsearchGateway implements CastMemberGateway {
     }
 
     @Override
-    public void deleteById(String anId) {
-
+    public void deleteById(final String anId) {
+        castMemberRepository.deleteById(anId);
     }
 
     @Override
