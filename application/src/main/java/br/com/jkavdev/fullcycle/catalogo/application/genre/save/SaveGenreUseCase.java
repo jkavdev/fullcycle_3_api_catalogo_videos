@@ -1,4 +1,4 @@
-package br.com.jkavdev.fullcycle.catalogo.application.genre;
+package br.com.jkavdev.fullcycle.catalogo.application.genre.save;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.DomainException;

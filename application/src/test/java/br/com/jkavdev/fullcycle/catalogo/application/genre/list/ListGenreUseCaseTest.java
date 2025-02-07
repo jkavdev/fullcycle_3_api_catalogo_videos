@@ -1,7 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.application.genre.list;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
-import br.com.jkavdev.fullcycle.catalogo.application.genre.ListGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;

@@ -1,4 +1,4 @@
-package br.com.jkavdev.fullcycle.catalogo.application.genre;
+package br.com.jkavdev.fullcycle.catalogo.application.genre.list;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;

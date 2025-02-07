@@ -1,7 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.application.genre.save;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
-import br.com.jkavdev.fullcycle.catalogo.application.genre.SaveGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.DomainException;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
