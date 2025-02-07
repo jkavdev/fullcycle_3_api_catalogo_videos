@@ -3,9 +3,12 @@ package br.com.jkavdev.fullcycle.catalogo.domain;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberType;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
+import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import net.datafaker.Faker;
 
+import java.util.HashSet;
 import java.util.UUID;
 
 public final class Fixture {
@@ -140,6 +143,33 @@ public final class Fixture {
                     UUID.randomUUID().toString(),
                     "Leonan FullCycle",
                     CastMemberType.DIRECTOR,
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
+        }
+    }
+
+    public static final class Genres {
+
+        public static Genre tech() {
+            return Genre.with(
+                    IdUtils.uniqueId(),
+                    "Technology",
+                    true,
+                    new HashSet<>(),
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    InstantUtils.now()
+            );
+        }
+
+        public static Genre business() {
+            return Genre.with(
+                    IdUtils.uniqueId(),
+                    "Business",
+                    true,
+                    new HashSet<>(),
+                    InstantUtils.now(),
                     InstantUtils.now(),
                     InstantUtils.now()
             );
