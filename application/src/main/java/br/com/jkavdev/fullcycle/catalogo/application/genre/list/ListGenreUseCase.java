@@ -6,6 +6,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,11 +46,24 @@ public class ListGenreUseCase extends UseCase<ListGenreUseCase.Input, Pagination
 
     public record Output(
             String id,
-            String name
+            String name,
+            boolean active,
+            Set<String> categories,
+            Instant createdAt,
+            Instant updatedAt,
+            Instant deletedAt
     ) {
 
         public static Output from(final Genre genre) {
-            return new Output(genre.id(), genre.name());
+            return new Output(
+                    genre.id(),
+                    genre.name(),
+                    genre.active(),
+                    genre.categories(),
+                    genre.createdAt(),
+                    genre.updatedAt(),
+                    genre.deletedAt()
+            );
         }
     }
 
