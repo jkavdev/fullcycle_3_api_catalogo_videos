@@ -21,7 +21,7 @@ public class GenreGraphQLController {
     }
 
     @QueryMapping
-    public List<ListGenreUseCase.Output> categories(
+    public List<ListGenreUseCase.Output> genres(
             @Argument final String search,
             @Argument final int page,
             @Argument final int perPage,

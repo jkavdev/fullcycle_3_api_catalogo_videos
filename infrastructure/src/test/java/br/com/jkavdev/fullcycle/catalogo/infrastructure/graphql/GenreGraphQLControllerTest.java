@@ -163,7 +163,7 @@ public class GenreGraphQLControllerTest {
         final var query = """
                 query AllGenres($search: String, $page: Int, $perPage: Int, $sort: String, $direction: String, $categories: [String]){
                 
-                    genres(search: $search, page: $page, perPage: $perPage, sort: $sort, direction: $direction, $categories: [String]) {
+                    genres(search: $search, page: $page, perPage: $perPage, sort: $sort, direction: $direction, categories: $categories) {
                       id
                       name
                       active
