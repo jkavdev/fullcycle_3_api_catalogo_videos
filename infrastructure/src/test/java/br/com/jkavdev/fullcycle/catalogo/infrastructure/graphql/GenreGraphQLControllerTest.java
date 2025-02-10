@@ -273,4 +273,58 @@ public class GenreGraphQLControllerTest {
         Assertions.assertEquals(expectedDate, actualGenre.deletedAt());
     }
 
+    @Test
+    public void givenActiveGenreInputWithoutDeletedAt_whenCallsSaveGenreMutation_shouldPersistAndReturn() {
+        // given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedName = "qualquerNome";
+        final var expectedActive = false;
+        final var expectedCategories = Set.of("c1", "c2");
+        final var expectedDate = InstantUtils.now();
+
+        final var input = Map.of(
+                "id", expectedId,
+                "name", expectedName,
+                "active", expectedActive,
+                "categories", expectedCategories,
+                "createdAt", expectedDate.toString(),
+                "updatedAt", expectedDate.toString()
+        );
+
+        // indicando apenas alguns campos como retorno
+        final var query = """
+                mutation SaveGenre($input: GenreInput!){
+                    genre: saveGenre(input: $input) {
+                      id
+                    }
+                }
+                """;
+
+        // retornando o proprio argumento como retorno do metodo
+        Mockito.doReturn(new SaveGenreUseCase.Output(expectedId))
+                .when(saveGenreUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        graphql.document(query)
+                .variable("input", input)
+                .execute()
+                // da pra testar o retorno do graphql
+                .path("genre.id").entity(String.class).isEqualTo(expectedId);
+
+        // then
+        final var captor = ArgumentCaptor.forClass(SaveGenreUseCase.Input.class);
+        Mockito.verify(saveGenreUseCase, Mockito.times(1))
+                .execute(captor.capture());
+
+        final var actualGenre = captor.getValue();
+        Assertions.assertEquals(expectedId, actualGenre.id());
+        Assertions.assertEquals(expectedName, actualGenre.name());
+        Assertions.assertEquals(expectedActive, actualGenre.active());
+        Assertions.assertEquals(expectedCategories, actualGenre.categories());
+        Assertions.assertEquals(expectedDate, actualGenre.createdAt());
+        Assertions.assertEquals(expectedDate, actualGenre.updatedAt());
+        Assertions.assertNull( actualGenre.deletedAt());
+    }
+
 }

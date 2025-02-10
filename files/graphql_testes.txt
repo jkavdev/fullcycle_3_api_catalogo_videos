@@ -78,3 +78,38 @@ mutation MyMutation {
     updatedAt
   }
 }
+
+// salvar genre
+mutation MyMutation($id: ID = "", $createdAt: String = "", $categories: [String] = "", $active: Boolean = false, $updatedAt: String = "", $deletedAt: String = "", $name: String = "") {
+  saveGenre(
+    input: {id: $id, name: $name, categories: $categories, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, active: $active}
+  ) {
+    id
+  }
+}
+
+{
+  "id": "31fafcd592a048109bcc0dsbdd38743213",
+  "name": "Marcuds Mellen",
+  "active": true,
+  "categories": [
+    "c1",
+    "c2"
+  ],
+  "createdAt": "2025-02-06T06:33:16.830Z",
+  "updatedAt": "2025-02-06T06:33:16.830Z",
+  "deletedAt": null
+}
+
+//listando genres
+query MyQuery {
+  genres(page: 10) {
+    active
+    categories
+    deletedAt
+    createdAt
+    id
+    name
+    updatedAt
+  }
+}

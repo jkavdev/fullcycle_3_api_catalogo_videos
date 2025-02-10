@@ -39,5 +39,5 @@ input GenreInput {
     categories: [String]!
     createdAt: String!
     updatedAt: String!
-    deletedAt: String!
+    deletedAt: String
 }
