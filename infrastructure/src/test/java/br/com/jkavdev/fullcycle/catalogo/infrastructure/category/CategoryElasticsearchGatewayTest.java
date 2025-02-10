@@ -86,7 +86,7 @@ public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest 
                 .orElseThrow();
 
         // when
-        categoryGateway.deleteById(expectedId);
+        categoryGateway.findById(expectedId);
 
         // then
         Assertions.assertEquals(expectedCategory.id(), actualOutput.id());

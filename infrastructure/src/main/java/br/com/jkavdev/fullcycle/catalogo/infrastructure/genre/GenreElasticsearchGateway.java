@@ -42,8 +42,9 @@ public class GenreElasticsearchGateway implements GenreGateway {
     }
 
     @Override
-    public Optional<Genre> findById(String genreId) {
-        return Optional.empty();
+    public Optional<Genre> findById(final String anId) {
+        return genreRepository.findById(anId)
+                .map(GenreDocument::toGenre);
     }
 
     @Override
@@ -51,16 +52,6 @@ public class GenreElasticsearchGateway implements GenreGateway {
         return null;
     }
 
-//    @Override
-//    public void deleteById(final String anId) {
-//        categoryRepository.deleteById(anId);
-//    }
-//
-//    @Override
-//    public Optional<Genre> findById(final String anId) {
-//        return categoryRepository.findById(anId)
-//                .map(GenreDocument::toGenre);
-//    }
 //
 //    @Override
 //    public Pagination<Genre> findAll(final GenreSearchQuery aQuery) {
