@@ -6,8 +6,16 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreRepository;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchOperations;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -48,45 +56,50 @@ public class GenreElasticsearchGateway implements GenreGateway {
     }
 
     @Override
-    public Pagination<Genre> findAll(GenreSearchQuery aQuery) {
-        return null;
+    public Pagination<Genre> findAll(final GenreSearchQuery aQuery) {
+        final var terms = aQuery.terms();
+        final var currentPage = aQuery.page();
+        final var perPage = aQuery.perPage();
+
+        final var sort =
+                Sort.by(Sort.Direction.fromString(aQuery.direction()), buildSort(aQuery.sort()));
+        final var page = PageRequest.of(currentPage, perPage, sort);
+
+        final var query =
+                StringUtils.isEmpty(terms) && CollectionUtils.isEmpty(aQuery.categories())
+                        ? Query.findAll().setPageable(page)
+                        : new CriteriaQuery(createCriteria(aQuery), page);
+
+        final var res = searchOperations.search(query, GenreDocument.class);
+        final var total = res.getTotalHits();
+        final var genres = res.stream()
+                .map(SearchHit::getContent)
+                .map(GenreDocument::toGenre)
+                .toList();
+        return new Pagination<>(currentPage, perPage, total, genres);
     }
 
-//
-//    @Override
-//    public Pagination<Genre> findAll(final GenreSearchQuery aQuery) {
-//        final var terms = aQuery.terms();
-//        final var currentPage = aQuery.page();
-//        final var perPage = aQuery.perPage();
-//
-//        final var sort =
-//                Sort.by(Sort.Direction.fromString(aQuery.direction()), buildSort(aQuery.sort()));
-//        final var page = PageRequest.of(currentPage, perPage, sort);
-//
-//        final Query query;
-//        if (StringUtils.isNotEmpty(terms)) {
-//            final var criteia = Criteria.where("name").contains(terms)
-//                    .or(Criteria.where("description").contains(terms));
-//            query = new CriteriaQuery(criteia, page);
-//        } else {
-//            query = Query.findAll()
-//                    .setPageable(page);
-//        }
-//
-//        final var res = searchOperations.search(query, GenreDocument.class);
-//        final var total = res.getTotalHits();
-//        final var categories = res.stream()
-//                .map(SearchHit::getContent)
-//                .map(GenreDocument::toGenre)
-//                .toList();
-//        return new Pagination<>(currentPage, perPage, total, categories);
-//    }
-//
-//    private String buildSort(final String sort) {
-//        if (NAME_PROP.equals(sort)) {
-//            return sort.concat(KEYWORD);
-//        } else {
-//            return sort;
-//        }
-//    }
+    private static Criteria createCriteria(final GenreSearchQuery aQuery) {
+        Criteria criteria = null;
+
+        if (StringUtils.isNotEmpty(aQuery.terms())) {
+            criteria = Criteria.where("name").contains(aQuery.terms());
+        }
+        if (!CollectionUtils.isEmpty(aQuery.categories())) {
+            final var categoriesWhere = Criteria.where("categories").in(aQuery.categories());
+            criteria = criteria != null
+                    ? criteria.and(categoriesWhere)
+                    : categoriesWhere;
+        }
+
+        return criteria;
+    }
+
+    private String buildSort(final String sort) {
+        if (NAME_PROP.equals(sort)) {
+            return sort.concat(KEYWORD);
+        } else {
+            return sort;
+        }
+    }
 }

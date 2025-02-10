@@ -9,6 +9,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import net.datafaker.Faker;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public final class Fixture {
@@ -156,7 +157,7 @@ public final class Fixture {
                     IdUtils.uniqueId(),
                     "Technology",
                     true,
-                    new HashSet<>(),
+                    Set.of("c1"),
                     InstantUtils.now(),
                     InstantUtils.now(),
                     null
@@ -172,6 +173,18 @@ public final class Fixture {
                     InstantUtils.now(),
                     InstantUtils.now(),
                     InstantUtils.now()
+            );
+        }
+
+        public static Genre marketing() {
+            return Genre.with(
+                    IdUtils.uniqueId(),
+                    "Marketing",
+                    true,
+                    Set.of("c2"),
+                    InstantUtils.now(),
+                    InstantUtils.now(),
+                    null
             );
         }
     }
