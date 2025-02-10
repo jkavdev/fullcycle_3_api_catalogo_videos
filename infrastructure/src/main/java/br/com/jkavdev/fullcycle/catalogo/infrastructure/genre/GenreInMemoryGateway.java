@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Component
+//@Component
 public class GenreInMemoryGateway implements GenreGateway {
 
     private final ConcurrentHashMap<String, Genre> db;

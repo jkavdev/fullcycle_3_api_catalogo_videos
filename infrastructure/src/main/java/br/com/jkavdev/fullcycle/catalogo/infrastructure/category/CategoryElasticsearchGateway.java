@@ -26,6 +26,7 @@ public class CategoryElasticsearchGateway implements CategoryGateway {
     private static final String KEYWORD = ".keyword";
 
     private final CategoryRepository categoryRepository;
+
     private final SearchOperations searchOperations;
 
     public CategoryElasticsearchGateway(

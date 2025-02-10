@@ -159,7 +159,7 @@ public final class Fixture {
                     new HashSet<>(),
                     InstantUtils.now(),
                     InstantUtils.now(),
-                    InstantUtils.now()
+                    null
             );
         }
 
@@ -167,7 +167,7 @@ public final class Fixture {
             return Genre.with(
                     IdUtils.uniqueId(),
                     "Business",
-                    true,
+                    false,
                     new HashSet<>(),
                     InstantUtils.now(),
                     InstantUtils.now(),
