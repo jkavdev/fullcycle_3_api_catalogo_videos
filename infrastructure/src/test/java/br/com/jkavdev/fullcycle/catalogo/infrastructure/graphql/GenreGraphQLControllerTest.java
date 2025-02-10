@@ -2,8 +2,11 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
 import br.com.jkavdev.fullcycle.catalogo.GraphQLControllerTest;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.list.ListGenreUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,16 +14,24 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @GraphQLControllerTest(controllers = GenreGraphQLController.class)
 public class GenreGraphQLControllerTest {
 
+    private static final ParameterizedTypeReference<Set<String>> CATEGORIES_TYPE = new ParameterizedTypeReference<>() {
+    };
+
     @MockBean
     private ListGenreUseCase listGenreUseCase;
+
+    @MockBean
+    private SaveGenreUseCase saveGenreUseCase;
 
     @Autowired
     private GraphQlTester graphql;
@@ -205,6 +216,61 @@ public class GenreGraphQLControllerTest {
         Assertions.assertEquals(expectedDirection, actualQuery.direction());
         Assertions.assertEquals(expectedSearch, actualQuery.terms());
         Assertions.assertEquals(expectedCategories, actualQuery.categories());
+    }
+
+    @Test
+    public void givenGenreInput_whenCallsSaveGenreMutation_shouldPersistAndReturn() {
+        // given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedName = "qualquerNome";
+        final var expectedActive = false;
+        final var expectedCategories = Set.of("c1", "c2");
+        final var expectedDate = InstantUtils.now();
+
+        final var input = Map.of(
+                "id", expectedId,
+                "name", expectedName,
+                "active", expectedActive,
+                "categories", expectedCategories,
+                "createdAt", expectedDate.toString(),
+                "updatedAt", expectedDate.toString(),
+                "deletedAt", expectedDate.toString()
+        );
+
+        // indicando apenas alguns campos como retorno
+        final var query = """
+                mutation SaveGenre($input: GenreInput!){
+                    genre: saveGenre(input: $input) {
+                      id
+                    }
+                }
+                """;
+
+        // retornando o proprio argumento como retorno do metodo
+        Mockito.doReturn(new SaveGenreUseCase.Output(expectedId))
+                .when(saveGenreUseCase)
+                .execute(ArgumentMatchers.any());
+
+        // when
+        graphql.document(query)
+                .variable("input", input)
+                .execute()
+                // da pra testar o retorno do graphql
+                .path("genre.id").entity(String.class).isEqualTo(expectedId);
+
+        // then
+        final var captor = ArgumentCaptor.forClass(SaveGenreUseCase.Input.class);
+        Mockito.verify(saveGenreUseCase, Mockito.times(1))
+                .execute(captor.capture());
+
+        final var actualGenre = captor.getValue();
+        Assertions.assertEquals(expectedId, actualGenre.id());
+        Assertions.assertEquals(expectedName, actualGenre.name());
+        Assertions.assertEquals(expectedActive, actualGenre.active());
+        Assertions.assertEquals(expectedCategories, actualGenre.categories());
+        Assertions.assertEquals(expectedDate, actualGenre.createdAt());
+        Assertions.assertEquals(expectedDate, actualGenre.updatedAt());
+        Assertions.assertEquals(expectedDate, actualGenre.deletedAt());
     }
 
 }
