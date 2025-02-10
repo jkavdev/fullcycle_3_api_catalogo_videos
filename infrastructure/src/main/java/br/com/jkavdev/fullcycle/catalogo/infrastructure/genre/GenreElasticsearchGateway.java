@@ -6,14 +6,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchOperations;
-import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -25,27 +18,27 @@ public class GenreElasticsearchGateway implements GenreGateway {
     private static final String NAME_PROP = "name";
     private static final String KEYWORD = ".keyword";
 
-    private final GenreRepository categoryRepository;
+    private final GenreRepository genreRepository;
 
     private final SearchOperations searchOperations;
 
     public GenreElasticsearchGateway(
-            final GenreRepository categoryRepository,
+            final GenreRepository genreRepository,
             final SearchOperations searchOperations
     ) {
-        this.categoryRepository = Objects.requireNonNull(categoryRepository);
+        this.genreRepository = Objects.requireNonNull(genreRepository);
         this.searchOperations = Objects.requireNonNull(searchOperations);
     }
 
     @Override
     public Genre save(final Genre aGenre) {
-        categoryRepository.save(GenreDocument.from(aGenre));
+        genreRepository.save(GenreDocument.from(aGenre));
         return aGenre;
     }
 
     @Override
-    public void deleteById(String genreId) {
-
+    public void deleteById(final String anId) {
+        genreRepository.deleteById(anId);
     }
 
     @Override
