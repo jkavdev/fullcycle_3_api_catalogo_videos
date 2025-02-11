@@ -1,4 +1,3 @@
-
 extend type Query {
     genres(
         search: String = "",
@@ -6,12 +5,11 @@ extend type Query {
         perPage: Int = 10,
         sort: String = "name",
         direction: String = "asc",
-        categories: [String] = []
+        categories: [String] = [],
     ): [Genre]!
 }
 
 extend type Mutation {
-
     saveGenre(input: GenreInput!): NewGenre!
 }
 
@@ -23,7 +21,7 @@ type Genre {
     categories: [String]!
     createdAt: String!
     updatedAt: String!
-    deletedAt: String!
+    deletedAt: String
 }
 
 """ A Genre """

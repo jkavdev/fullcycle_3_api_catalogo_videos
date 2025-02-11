@@ -6,8 +6,8 @@ elasticsearch:
 keycloak:
   client-id: ${KEYCLOAK_CLIENT_ID}
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
-  realm: ${KEYCLOAK_REALM}
   host: ${KEYCLOAK_HOST}
+  realm: ${KEYCLOAK_REALM}
 
 rest-client:
   keycloak:

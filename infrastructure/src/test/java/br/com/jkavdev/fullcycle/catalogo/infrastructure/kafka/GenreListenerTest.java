@@ -52,11 +52,11 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
     @Test
     public void testGenresTopics() throws Exception {
         // given
-        final var expectedMainTopic = "adm_videos.adm_videos.genres";
-        final var expectedRetry0Topic = "adm_videos.adm_videos.genres-retry-0";
-        final var expectedRetry1Topic = "adm_videos.adm_videos.genres-retry-1";
-        final var expectedRetry2Topic = "adm_videos.adm_videos.genres-retry-2";
-        final var expectedDLTTopic = "adm_videos.adm_videos.genres-dlt";
+        final var expectedMainTopic = "adm_videos_mysql.adm_videos.genres";
+        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.genres-retry-0";
+        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.genres-retry-1";
+        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.genres-retry-2";
+        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.genres-dlt";
 
         // when
         final var actualTopics = admin().listTopics().listings().get(10, TimeUnit.SECONDS).stream()
@@ -76,11 +76,11 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
         // given
         final var expectedMaxAttemps = 4;
         final var expectedMaxDLTAttemps = 1;
-        final var expectedMainTopic = "adm_videos.adm_videos.genres";
-        final var expectedRetry0Topic = "adm_videos.adm_videos.genres-retry-0";
-        final var expectedRetry1Topic = "adm_videos.adm_videos.genres-retry-1";
-        final var expectedRetry2Topic = "adm_videos.adm_videos.genres-retry-2";
-        final var expectedDLTTopic = "adm_videos.adm_videos.genres-dlt";
+        final var expectedMainTopic = "adm_videos_mysql.adm_videos.genres";
+        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.genres-retry-0";
+        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.genres-retry-1";
+        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.genres-retry-2";
+        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.genres-dlt";
 
         final var business = Fixture.Genres.business();
         final var businessEvent = new br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreEvent(business.id());

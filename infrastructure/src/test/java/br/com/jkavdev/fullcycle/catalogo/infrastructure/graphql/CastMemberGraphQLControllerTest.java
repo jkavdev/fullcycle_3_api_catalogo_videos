@@ -4,7 +4,6 @@ import br.com.jkavdev.fullcycle.catalogo.GraphQLControllerTest;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
-import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryOutput;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
@@ -122,7 +121,7 @@ public class CastMemberGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualCategories = res.path("castMembers")
-                .entityList(ListCategoryOutput.class)
+                .entityList(ListCastMemberOutput.class)
                 .get();
 
         // then
@@ -181,7 +180,7 @@ public class CastMemberGraphQLControllerTest {
                 .execute();
 
         final var actualMembers = res.path("castMembers")
-                .entityList(ListCategoryOutput.class)
+                .entityList(ListCastMemberOutput.class)
                 .get();
 
         // then

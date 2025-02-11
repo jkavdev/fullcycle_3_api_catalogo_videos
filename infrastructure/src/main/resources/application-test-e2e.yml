@@ -8,9 +8,9 @@ elasticsearch:
 
 keycloak:
   client-id: fc3-app
-  client-secret: secret
-  realm: test
+  client-secret: seecret
   host: "http://localhost:${wiremock.server.port:8001}"
+  realm: test
 
 logging:
   level:
