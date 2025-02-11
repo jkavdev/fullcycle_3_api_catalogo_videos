@@ -15,7 +15,10 @@ public final class InstantUtils {
         return Instant.now().truncatedTo(ChronoUnit.MILLIS);
     }
 
-    public static Instant fromTimestamp(final long timestamp) {
+    public static Instant fromTimestamp(final Long timestamp) {
+        if (timestamp == null) {
+            return null;
+        }
         return new Timestamp(timestamp / UNIX_PRECISION).toInstant();
     }
 }

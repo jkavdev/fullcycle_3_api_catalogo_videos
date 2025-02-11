@@ -48,11 +48,11 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
     @Test
     public void testCastMembersTopics() throws Exception {
         // given
-        final var expectedMainTopic = "adm_videos_mysql.adm_videos.cast_members";
-        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.cast_members-retry-0";
-        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.cast_members-retry-1";
-        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.cast_members-retry-2";
-        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.cast_members-dlt";
+        final var expectedMainTopic = "adm_videos.adm_videos.cast_members";
+        final var expectedRetry0Topic = "adm_videos.adm_videos.cast_members-retry-0";
+        final var expectedRetry1Topic = "adm_videos.adm_videos.cast_members-retry-1";
+        final var expectedRetry2Topic = "adm_videos.adm_videos.cast_members-retry-2";
+        final var expectedDLTTopic = "adm_videos.adm_videos.cast_members-dlt";
 
         // when
         final var actualTopics = admin().listTopics().listings().get(10, TimeUnit.SECONDS).stream()
@@ -72,17 +72,17 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
         // given
         final var expectedMaxAttempts = 4;
         final var expectedMaxDLTAttempts = 1;
-        final var expectedMainTopic = "adm_videos_mysql.adm_videos.cast_members";
-        final var expectedRetry0Topic = "adm_videos_mysql.adm_videos.cast_members-retry-0";
-        final var expectedRetry1Topic = "adm_videos_mysql.adm_videos.cast_members-retry-1";
-        final var expectedRetry2Topic = "adm_videos_mysql.adm_videos.cast_members-retry-2";
-        final var expectedDLTTopic = "adm_videos_mysql.adm_videos.cast_members-dlt";
+        final var expectedMainTopic = "adm_videos.adm_videos.cast_members";
+        final var expectedRetry0Topic = "adm_videos.adm_videos.cast_members-retry-0";
+        final var expectedRetry1Topic = "adm_videos.adm_videos.cast_members-retry-1";
+        final var expectedRetry2Topic = "adm_videos.adm_videos.cast_members-retry-2";
+        final var expectedDLTTopic = "adm_videos.adm_videos.cast_members-dlt";
 
         final var expectedMember = Fixture.CastMembers.gabriel();
         final var expectedEvent = CastMemberEvent.from(expectedMember);
 
         final var message =
-                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.DELETE)));
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(null, expectedEvent, aSource(), Operation.DELETE)));
 
         final var latch = new CountDownLatch(5);
 
@@ -157,7 +157,7 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
         final var expectedEvent = CastMemberEvent.from(expectedMember);
 
         final var message =
-                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.CREATE)));
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, null, aSource(), Operation.CREATE)));
 
         final var latch = new CountDownLatch(1);
 
@@ -185,7 +185,7 @@ class CastMemberListenerTest extends AbstractEmbeddedKafkaTest {
         final var expectedEvent = new CategoryEvent(expectedMember.id());
 
         final var message =
-                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(expectedEvent, expectedEvent, aSource(), Operation.DELETE)));
+                Json.writeValueAsString(new MessageValue<>(new ValuePayload<>(null, expectedEvent, aSource(), Operation.DELETE)));
 
         final var latch = new CountDownLatch(1);
 

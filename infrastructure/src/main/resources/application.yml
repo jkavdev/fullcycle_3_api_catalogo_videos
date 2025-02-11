@@ -23,13 +23,21 @@ kafka:
       topics: adm_videos.adm_videos.categories
 #      topics: adm_videos.adm_videos.categories # rever
       group-id: catalogo-service
-      max-attempts: 5
+      max-attempts: 4
     cast-members:
       auto-offset-reset: earliest
       concurrency: 1
       id: kafka-listener-castmembers
       topics: adm_videos.adm_videos.cast_members
 #      topics: adm_videos.adm_videos.categories # rever
+      group-id: catalogo-service
+      max-attempts: 4
+    genres:
+      auto-offset-reset: earliest
+      concurrency: 1
+      id: kafka-listener-genres
+      topics: adm_videos.adm_videos.genres
+      #      topics: adm_videos.adm_videos.categories # rever
       group-id: catalogo-service
       max-attempts: 4
 

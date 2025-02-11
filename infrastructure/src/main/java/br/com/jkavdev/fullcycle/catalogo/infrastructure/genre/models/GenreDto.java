@@ -16,6 +16,18 @@ public record GenreDto(
         @JsonProperty("deleted_at") Instant deletedAt
 ) {
 
+    public static GenreDto from(final Genre genre) {
+        return new GenreDto(
+                genre.id(),
+                genre.name(),
+                genre.active(),
+                genre.categories(),
+                genre.createdAt(),
+                genre.updatedAt(),
+                genre.deletedAt()
+        );
+    }
+
     @Override
     public Boolean active() {
         return active != null ? active : true;
