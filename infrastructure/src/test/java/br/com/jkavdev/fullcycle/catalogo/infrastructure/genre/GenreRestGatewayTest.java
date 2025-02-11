@@ -1,10 +1,10 @@
-package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
+package br.com.jkavdev.fullcycle.catalogo.infrastructure.genre;
 
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorException;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.ClientCredentialsManager;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreDto;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -19,28 +19,28 @@ import org.springframework.http.MediaType;
 
 import java.util.Map;
 
-public class CategoryRestGatewayTest extends AbstractRestClientTest {
+class GenreRestGatewayTest extends AbstractRestClientTest {
 
     @Autowired
-    private CategoryRestGateway target;
+    private GenreRestGateway target;
 
     @SpyBean
     private ClientCredentialsManager credentialsManager;
 
     // OK
     @Test
-    public void givenACategory_whenReceive200FromServer_shouldBeOk() {
+    public void givenAGenre_whenReceive200FromServer_shouldBeOk() {
         // given
-        final var aulas = Fixture.Categories.aulas();
+        final var business = Fixture.Genres.business();
 
-        final var responseBody = writeValueAsString(new CategoryDto(
-                aulas.id(),
-                aulas.name(),
-                aulas.description(),
-                aulas.active(),
-                aulas.createdAt(),
-                aulas.updatedAt(),
-                aulas.deletedAt()
+        final var responseBody = writeValueAsString(new GenreDto(
+                business.id(),
+                business.name(),
+                business.active(),
+                business.categories(),
+                business.createdAt(),
+                business.updatedAt(),
+                business.deletedAt()
         ));
 
         final var expectedToken = "qualquerAccessToken";
@@ -49,7 +49,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get( WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -60,35 +60,35 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         );
 
         // when
-        final var actualCategory = target.categoryOfId(aulas.id()).get();
+        final var actualGenre = target.genreOfId(business.id()).get();
 
         // then
-        Assertions.assertEquals(aulas.id(), actualCategory.id());
-        Assertions.assertEquals(aulas.name(), actualCategory.name());
-        Assertions.assertEquals(aulas.description(), actualCategory.description());
-        Assertions.assertEquals(aulas.active(), actualCategory.active());
-        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
-        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
-        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+        Assertions.assertEquals(business.id(), actualGenre.id());
+        Assertions.assertEquals(business.name(), actualGenre.name());
+        Assertions.assertEquals(business.active(), actualGenre.active());
+        Assertions.assertEquals(business.categories(), actualGenre.categories());
+        Assertions.assertEquals(business.createdAt(), actualGenre.createdAt());
+        Assertions.assertEquals(business.updatedAt(), actualGenre.updatedAt());
+        Assertions.assertEquals(business.deletedAt(), actualGenre.deletedAt());
 
         WireMock.verify(1, WireMock.getRequestedFor(
-                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
         );
     }
 
     @Test
-    public void givenACategory_whenReceiveTwoCalls_shouldReturnCachedValue() {
+    public void givenAGenre_whenReceiveTwoCalls_shouldReturnCachedValue() {
         // given
-        final var aulas = Fixture.Categories.aulas();
+        final var business = Fixture.Genres.business();
 
-        final var responseBody = writeValueAsString(new CategoryDto(
-                aulas.id(),
-                aulas.name(),
-                aulas.description(),
-                aulas.active(),
-                aulas.createdAt(),
-                aulas.updatedAt(),
-                aulas.deletedAt()
+        final var responseBody = writeValueAsString(new GenreDto(
+                business.id(),
+                business.name(),
+                business.active(),
+                business.categories(),
+                business.createdAt(),
+                business.updatedAt(),
+                business.deletedAt()
         ));
 
         final var expectedToken = "qualquerAccessToken";
@@ -97,7 +97,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -108,34 +108,34 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         );
 
         // when
-        target.categoryOfId(aulas.id()).get();
-        target.categoryOfId(aulas.id()).get();
-        final var actualCategory = target.categoryOfId(aulas.id()).get();
+        target.genreOfId(business.id()).get();
+        target.genreOfId(business.id()).get();
+        final var actualGenre = target.genreOfId(business.id()).get();
 
         // then
-        Assertions.assertEquals(aulas.id(), actualCategory.id());
-        Assertions.assertEquals(aulas.name(), actualCategory.name());
-        Assertions.assertEquals(aulas.description(), actualCategory.description());
-        Assertions.assertEquals(aulas.active(), actualCategory.active());
-        Assertions.assertEquals(aulas.createdAt(), actualCategory.createdAt());
-        Assertions.assertEquals(aulas.updatedAt(), actualCategory.updatedAt());
-        Assertions.assertEquals(aulas.deletedAt(), actualCategory.deletedAt());
+        Assertions.assertEquals(business.id(), actualGenre.id());
+        Assertions.assertEquals(business.name(), actualGenre.name());
+        Assertions.assertEquals(business.active(), actualGenre.active());
+        Assertions.assertEquals(business.categories(), actualGenre.categories());
+        Assertions.assertEquals(business.createdAt(), actualGenre.createdAt());
+        Assertions.assertEquals(business.updatedAt(), actualGenre.updatedAt());
+        Assertions.assertEquals(business.deletedAt(), actualGenre.deletedAt());
 
-        final var actualCachedValue = cache("admin-categories").get(aulas.id());
-        Assertions.assertEquals(actualCategory, actualCachedValue.get());
+        final var actualCachedValue = cache("admin-genres").get(business.id());
+        Assertions.assertEquals(actualGenre, actualCachedValue.get());
 
         WireMock.verify(1, WireMock.getRequestedFor(
-                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
         );
     }
 
     // 5XX
     @Test
-    public void givenACategory_whenReceive5XXFromServer_shouldReturnInternalError() {
+    public void givenAGenre_whenReceive5XXFromServer_shouldReturnInternalError() {
         // given
         final var expectedId = "123";
         final var expectedErrorStatus = 500;
-        final var expecterErrorMessage = "error observed from categories [resourceId::%s] [status::%s]"
+        final var expecterErrorMessage = "error observed from genres [resourceId::%s] [status::%s]"
                 .formatted(expectedId, expectedErrorStatus);
 
         final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
@@ -146,7 +146,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId)))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -158,19 +158,19 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
 
         // when
         final var actualException = Assertions.assertThrows(InternalErrorException.class,
-                () -> target.categoryOfId(expectedId));
+                () -> target.genreOfId(expectedId));
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
         WireMock.verify(2, WireMock.getRequestedFor(
-                WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId)))
         );
     }
 
     // 404
     @Test
-    public void givenACategory_whenReceive404NotFoundFromServer_shouldReturnEmpty() {
+    public void givenAGenre_whenReceive404NotFoundFromServer_shouldReturnEmpty() {
         // given
         final var expectedId = "123";
         final var responseBody = writeValueAsString(Map.of("message", "not found"));
@@ -181,7 +181,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId)))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -192,32 +192,32 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         );
 
         // when
-        final var actualCategory = target.categoryOfId(expectedId);
+        final var actualGenre = target.genreOfId(expectedId);
 
         // then
-        Assertions.assertTrue(actualCategory.isEmpty());
+        Assertions.assertTrue(actualGenre.isEmpty());
 
         WireMock.verify(1, WireMock.getRequestedFor(
-                WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId)))
         );
     }
 
     // timeout
     @Test
-    public void givenACategory_whenReceiveTimeout_shouldReturnInternalError() {
+    public void givenAGenre_whenReceiveTimeout_shouldReturnInternalError() {
         // given
-        final var aulas = Fixture.Categories.aulas();
+        final var business = Fixture.Genres.business();
 
-        final var responseBody = writeValueAsString(new CategoryDto(
-                aulas.id(),
-                aulas.name(),
-                aulas.description(),
-                aulas.active(),
-                aulas.createdAt(),
-                aulas.updatedAt(),
-                aulas.deletedAt()
+        final var responseBody = writeValueAsString(new GenreDto(
+                business.id(),
+                business.name(),
+                business.active(),
+                business.categories(),
+                business.createdAt(),
+                business.updatedAt(),
+                business.deletedAt()
         ));
-        final var expecterErrorMessage = "timeout observed from categories [resourceId::%s]".formatted(aulas.id());
+        final var expecterErrorMessage = "timeout observed from genres [resourceId::%s]".formatted(business.id());
 
         final var expectedToken = "qualquerAccessToken";
         Mockito.doReturn(expectedToken)
@@ -225,7 +225,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -238,52 +238,52 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
 
         // when
         final var actualException = Assertions.assertThrows(InternalErrorException.class,
-                () -> target.categoryOfId(aulas.id()));
+                () -> target.genreOfId(business.id()));
 
         // then
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
         WireMock.verify(2, WireMock.getRequestedFor(
-                WireMock.urlPathEqualTo("/api/categories/%s".formatted(aulas.id())))
+                WireMock.urlPathEqualTo("/api/genres/%s".formatted(business.id())))
         );
     }
 
     // bulkhead
     @Test
-    public void givenACategory_whenBulkheadIsFull_shouldReturnError() {
+    public void givenAGenre_whenBulkheadIsFull_shouldReturnError() {
         // given
         final var expectedId = "123";
-        final var expecterErrorMessage = "Bulkhead 'categories' is full and does not permit further calls";
+        final var expecterErrorMessage = "Bulkhead 'genres' is full and does not permit further calls";
 
-        acquireBulkheadPermission(CATEGORY);
+        acquireBulkheadPermission(GENRE);
 
         // when
         final var actualException = Assertions.assertThrows(BulkheadFullException.class,
-                () -> target.categoryOfId(expectedId));
+                () -> target.genreOfId(expectedId));
 
         // then
         // nas configuracoes de testes definimos o maximo de permissoes por chamada com o valor::1
         // ai ao da errado ja tendo uma permissao, vai da o erro especifico do bulhead
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
-        releaseBulkheadPermission(CATEGORY);
+        releaseBulkheadPermission(GENRE);
     }
 
     @Test
     public void givenCalls_whenCBIsOpen_shouldReturnError() {
         // given
-        transitionToOpenState(CATEGORY);
+        transitionToOpenState(GENRE);
         final var expectedId = "123";
-        final var expecterErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+        final var expecterErrorMessage = "CircuitBreaker 'genres' is OPEN and does not permit further calls";
 
         // when
-        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.categoryOfId(expectedId));
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.genreOfId(expectedId));
 
         // then
-        checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
+        checkCircuitBreakerState(GENRE, CircuitBreaker.State.OPEN);
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
-        WireMock.verify(0, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+        WireMock.verify(0, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId))));
     }
 
     @Test
@@ -291,7 +291,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         // given
         final var expectedId = "123";
         final var expectedErrorStatus = 500;
-        final var expecterErrorMessage = "CircuitBreaker 'categories' is OPEN and does not permit further calls";
+        final var expecterErrorMessage = "CircuitBreaker 'genres' is OPEN and does not permit further calls";
 
         final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));
 
@@ -301,7 +301,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
                 .retrive();
 
         WireMock.stubFor(
-                WireMock.get(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId)))
+                WireMock.get(WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId)))
                         .withHeader(HttpHeaders.AUTHORIZATION, WireMock.equalTo("bearer %s".formatted(expectedToken)))
                         .willReturn(
                                 WireMock.aResponse()
@@ -312,15 +312,14 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         );
 
         // when
-        Assertions.assertThrows(InternalErrorException.class, () -> target.categoryOfId(expectedId));
-        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.categoryOfId(expectedId));
+        Assertions.assertThrows(InternalErrorException.class, () -> target.genreOfId(expectedId));
+        final var actualException = Assertions.assertThrows(CallNotPermittedException.class, () -> target.genreOfId(expectedId));
 
         // then
-        checkCircuitBreakerState(CATEGORY, CircuitBreaker.State.OPEN);
+        checkCircuitBreakerState(GENRE, CircuitBreaker.State.OPEN);
         Assertions.assertEquals(expecterErrorMessage, actualException.getMessage());
 
-        WireMock.verify(3, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/categories/%s".formatted(expectedId))));
+        WireMock.verify(3, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/genres/%s".formatted(expectedId))));
     }
 
 }
-

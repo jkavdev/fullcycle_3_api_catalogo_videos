@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo;
 
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberRepository;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.persistence.CategoryRepository;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreRepository;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 
@@ -16,5 +17,10 @@ public class IntegrationTestConfiguration {
     @Bean
     public CastMemberRepository castMemberRepository() {
         return Mockito.mock(CastMemberRepository.class);
+    }
+
+    @Bean
+    public GenreRepository genreRepository() {
+        return Mockito.mock(GenreRepository.class);
     }
 }
