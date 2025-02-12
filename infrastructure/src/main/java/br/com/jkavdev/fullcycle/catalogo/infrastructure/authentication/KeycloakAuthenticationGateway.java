@@ -3,7 +3,6 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorException;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Keycloak;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.properties.KeycloakProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -72,8 +71,8 @@ public class KeycloakAuthenticationGateway implements AuthenticationGateway {
     }
 
     public record KeycloakAuthenticationResult(
-            @JsonProperty("access_token") String accessToken,
-            @JsonProperty("refresh_token") String refreshToken
+            String accessToken,
+            String refreshToken
     ) {
 
     }

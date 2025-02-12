@@ -72,7 +72,7 @@ public class GenreListener {
         } else {
             genreGateway.genreOfId(messagePayload.after().id())
                     .map(it -> new SaveGenreUseCase.Input(
-                            it.id(), it.name(), it.active(), it.categories(), it.createdAt(), it.updatedAt(), it.deletedAt()
+                            it.id(), it.name(), it.isActive(), it.categoriesId(), it.createdAt(), it.updatedAt(), it.deletedAt()
                     ))
                     .ifPresentOrElse(
                             saveGenreUseCase::execute,

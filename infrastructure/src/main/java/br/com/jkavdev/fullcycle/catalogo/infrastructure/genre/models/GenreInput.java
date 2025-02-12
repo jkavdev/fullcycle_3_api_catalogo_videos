@@ -5,18 +5,18 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import java.time.Instant;
 import java.util.Set;
 
-public record GenreDto(
+public record GenreInput(
         String id,
         String name,
-        Boolean isActive,
-        Set<String> categoriesId,
+        Boolean active,
+        Set<String> categories,
         Instant createdAt,
         Instant updatedAt,
         Instant deletedAt
 ) {
 
-    public static GenreDto from(final Genre genre) {
-        return new GenreDto(
+    public static GenreInput from(final Genre genre) {
+        return new GenreInput(
                 genre.id(),
                 genre.name(),
                 genre.active(),
@@ -27,11 +27,4 @@ public record GenreDto(
         );
     }
 
-    public Boolean isActive() {
-        return isActive != null ? isActive : true;
-    }
-
-    public Genre toGenre() {
-        return Genre.with(id(), name(), isActive(), categoriesId(), createdAt(), updatedAt(), deletedAt());
-    }
 }

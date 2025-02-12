@@ -2,7 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
 import br.com.jkavdev.fullcycle.catalogo.application.genre.list.ListGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreInput;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -43,9 +43,9 @@ public class GenreGraphQLController {
     }
 
     @MutationMapping
-    public SaveGenreUseCase.Output saveGenre(@Argument(name = "input") final GenreDto arg) {
+    public SaveGenreUseCase.Output saveGenre(@Argument(name = "input") final GenreInput genreInput) {
         final var input = new SaveGenreUseCase.Input(
-                arg.id(), arg.name(), arg.active(), arg.categories(), arg.createdAt(), arg.updatedAt(), arg.deletedAt()
+                genreInput.id(), genreInput.name(), genreInput.active(), genreInput.categories(), genreInput.createdAt(), genreInput.updatedAt(), genreInput.deletedAt()
         );
         return saveGenreUseCase.execute(input);
     }

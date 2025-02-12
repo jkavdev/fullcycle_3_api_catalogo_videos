@@ -5,7 +5,7 @@ import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryU
 import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryInput;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -44,7 +44,7 @@ public class CategoryGraphQLController {
     }
 
     @MutationMapping
-    public Category saveCategory(@Argument final CategoryDto input) {
+    public Category saveCategory(@Argument final CategoryInput input) {
         return saveCategoryUseCase.execute(input.toCategory());
     }
 }
