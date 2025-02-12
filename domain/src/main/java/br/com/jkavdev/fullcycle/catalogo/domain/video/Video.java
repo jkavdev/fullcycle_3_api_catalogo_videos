@@ -1,5 +1,9 @@
 package br.com.jkavdev.fullcycle.catalogo.domain.video;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.validation.Error;
+import br.com.jkavdev.fullcycle.catalogo.domain.validation.ValidationHandler;
+import br.com.jkavdev.fullcycle.catalogo.domain.validation.handler.ThrowsValidationHandler;
+
 import java.time.Instant;
 import java.time.Year;
 import java.util.Set;
@@ -75,9 +79,27 @@ public class Video {
         this.thumbnailHalf = thumbnailHalf;
         this.trailer = trailer;
         this.video = video;
-        this.categories = categories;
-        this.genres = genres;
-        this.castMembers = castMembers;
+        this.categories = categories != null ? categories : Set.of();
+        this.genres = genres != null ? genres : Set.of();
+        this.castMembers = castMembers != null ? castMembers : Set.of();
+
+        validate(new ThrowsValidationHandler());
+
+        if (video == null || video.isBlank()) {
+            this.published = false;
+        }
+        if (trailer == null || trailer.isBlank()) {
+            this.published = false;
+        }
+        if (banner == null || banner.isBlank()) {
+            this.published = false;
+        }
+        if (thumbnail == null || thumbnail.isBlank()) {
+            this.published = false;
+        }
+        if (thumbnailHalf == null || thumbnailHalf.isBlank()) {
+            this.published = false;
+        }
     }
 
     public static Video with(
@@ -143,6 +165,21 @@ public class Video {
                 video.castMembers(),
                 video.genres()
         );
+    }
+
+    public void validate(final ValidationHandler handler) {
+        if (id == null || id.isBlank()) {
+            handler.append(new Error("'id' should not be empty"));
+        }
+        if (title == null || title.isBlank()) {
+            handler.append(new Error("'title' should not be empty"));
+        }
+        if (launchedAt == null) {
+            handler.append(new Error("'launchedAt' should not be empty"));
+        }
+        if (rating == null) {
+            handler.append(new Error("'rating' should not be empty"));
+        }
     }
 
     public String id() {
