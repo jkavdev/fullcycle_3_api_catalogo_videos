@@ -9,7 +9,7 @@ public record VideoSearchQuery(
         String sort,
         String direction,
         String rating,
-        String launchedAt,
+        Integer launchedAt,
         Set<String> categories,
         Set<String> castMembers,
         Set<String> genres

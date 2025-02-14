@@ -2,7 +2,6 @@ package br.com.jkavdev.fullcycle.catalogo.application.video.save;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.DomainException;
-import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.validation.Error;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Rating;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
@@ -30,13 +29,13 @@ public class SaveVideoUseCase extends UseCase<SaveVideoUseCase.Input, SaveVideoU
                 input.id(),
                 input.title(),
                 input.description(),
-                input.launchedAt(),
+                input.launchedAt().getValue(),
                 input.duration(),
-                input.rating(),
+                input.rating().getName(),
                 input.opened(),
                 input.published(),
-                input.createdAt(),
-                input.updatedAt(),
+                input.createdAt().toString(),
+                input.updatedAt().toString(),
                 input.banner(),
                 input.thumbnail(),
                 input.thumbnailHalf(),

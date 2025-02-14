@@ -6,6 +6,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
+import br.com.jkavdev.fullcycle.catalogo.domain.video.Rating;
+import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
 import net.datafaker.Faker;
 
 import java.util.HashSet;
@@ -185,6 +187,60 @@ public final class Fixture {
                     InstantUtils.now(),
                     InstantUtils.now(),
                     null
+            );
+        }
+    }
+
+    public static final class Videos {
+        public static Rating rating() {
+            return FAKER.options().option(Rating.values());
+        }
+
+        public static Video systemDesign() {
+            return Video.with(
+                    IdUtils.uniqueId(),
+                    "qualquerTitle",
+                    "qualquerDescricao",
+                    Fixture.year(),
+                    Fixture.duration(),
+                    rating().getName(),
+                    Fixture.bool(),
+                    Fixture.bool(),
+                    InstantUtils.now().toString(),
+                    InstantUtils.now().toString(),
+                    "http://video",
+                    "http://trailer",
+                    "http://banner",
+                    "http://thumbnail",
+                    "http://thumbnailhalf",
+                    Set.of(IdUtils.uniqueId()),
+                    Set.of(IdUtils.uniqueId()),
+                    Set.of(IdUtils.uniqueId())
+
+            );
+        }
+
+        public static Video java21() {
+            return Video.with(
+                    IdUtils.uniqueId(),
+                    "Java21",
+                    "qualquerDescricao",
+                    Fixture.year(),
+                    Fixture.duration(),
+                    rating().getName(),
+                    Fixture.bool(),
+                    Fixture.bool(),
+                    InstantUtils.now().toString(),
+                    InstantUtils.now().toString(),
+                    "http://video",
+                    "http://trailer",
+                    "http://banner",
+                    "http://thumbnail",
+                    "http://thumbnailhalf",
+                    Set.of(IdUtils.uniqueId()),
+                    Set.of(IdUtils.uniqueId()),
+                    Set.of(IdUtils.uniqueId())
+
             );
         }
     }

@@ -48,13 +48,13 @@ public class Video {
             final String id,
             final String title,
             final String description,
-            final Year launchedAt,
+            final Integer launchedAt,
             final double duration,
-            final Rating rating,
+            final String rating,
             final boolean opened,
             final boolean published,
-            final Instant createdAt,
-            final Instant updatedAt,
+            final String createdAt,
+            final String updatedAt,
             final String banner,
             final String thumbnail,
             final String thumbnailHalf,
@@ -67,13 +67,13 @@ public class Video {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.launchedAt = launchedAt;
+        this.launchedAt = launchedAt != null ? Year.of(launchedAt) : null;
         this.duration = duration;
-        this.rating = rating;
+        this.rating = Rating.of(rating).orElse(null);
         this.opened = opened;
         this.published = published;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = Instant.parse(createdAt);
+        this.updatedAt = Instant.parse(updatedAt);
         this.banner = banner;
         this.thumbnail = thumbnail;
         this.thumbnailHalf = thumbnailHalf;
@@ -84,6 +84,7 @@ public class Video {
         this.castMembers = castMembers != null ? castMembers : Set.of();
 
         validate(new ThrowsValidationHandler());
+
 
         if (video == null || video.isBlank()) {
             this.published = false;
@@ -106,13 +107,13 @@ public class Video {
             final String id,
             final String title,
             final String description,
-            final Year launchedAt,
+            final Integer launchedAt,
             final double duration,
-            final Rating rating,
+            final String rating,
             final boolean opened,
             final boolean published,
-            final Instant createdAt,
-            final Instant updatedAt,
+            final String createdAt,
+            final String updatedAt,
             final String banner,
             final String thumbnail,
             final String thumbnailHalf,
@@ -149,13 +150,13 @@ public class Video {
                 video.id(),
                 video.title(),
                 video.description(),
-                video.launchedAt(),
+                video.launchedAt().getValue(),
                 video.duration(),
-                video.rating(),
+                video.rating().getName(),
                 video.opened(),
                 video.published(),
-                video.createdAt(),
-                video.updatedAt(),
+                video.createdAt().toString(),
+                video.updatedAt().toString(),
                 video.banner(),
                 video.thumbnail(),
                 video.thumbnailHalf(),
@@ -179,6 +180,12 @@ public class Video {
         }
         if (rating == null) {
             handler.append(new Error("'rating' should not be empty"));
+        }
+        if (createdAt == null) {
+            handler.append(new Error("'createdAt' should not be empty"));
+        }
+        if (updatedAt == null) {
+            handler.append(new Error("'updatedAt' should not be empty"));
         }
     }
 

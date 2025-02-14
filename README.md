@@ -103,3 +103,6 @@ eh porque tem que mapear o `localhost` para esse `kafka` no `C:\Windows\System32
 ```manifest
 127.0.0.1 kafka
 ```
+
+TODOs: fazer o mesmo que foi feito para genero e video, no qual temos um input e output 
+no with, recebendo apenas o valor raw, e no construtor transformando para o objeto final
