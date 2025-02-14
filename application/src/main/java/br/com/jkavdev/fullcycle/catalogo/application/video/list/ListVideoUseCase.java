@@ -54,9 +54,15 @@ public class ListVideoUseCase extends UseCase<ListVideoUseCase.Input, Pagination
     public record Output(
             String id,
             String title,
+            String description,
             boolean published,
             int yearLaunched,
             String rating,
+            String banner,
+            String thumbnail,
+            String thumbnailHalf,
+            String trailer,
+            String video,
             Set<String> categories,
             Set<String> castMembers,
             Set<String> genres
@@ -66,9 +72,15 @@ public class ListVideoUseCase extends UseCase<ListVideoUseCase.Input, Pagination
             return new Output(
                     video.id(),
                     video.title(),
+                    video.description(),
                     video.published(),
                     video.launchedAt().getValue(),
                     video.rating().getName(),
+                    video.banner(),
+                    video.thumbnail(),
+                    video.thumbnailHalf(),
+                    video.trailer(),
+                    video.video(),
                     video.categories(),
                     video.castMembers(),
                     video.genres()
