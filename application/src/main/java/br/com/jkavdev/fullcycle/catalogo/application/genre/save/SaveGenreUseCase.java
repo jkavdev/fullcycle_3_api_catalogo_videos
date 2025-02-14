@@ -21,7 +21,7 @@ public class SaveGenreUseCase extends UseCase<SaveGenreUseCase.Input, SaveGenreU
     @Override
     public Output execute(final Input input) {
         if (input == null) {
-            throw DomainException.with(new Error("'SaveGenreUseCase.Input input' cannot be null"));
+            throw DomainException.with(new Error("'SaveGenreUseCase.Input' cannot be null"));
         }
         final var aGenre = Genre.with(
                 input.id(),

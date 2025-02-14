@@ -64,7 +64,7 @@ public class SaveGenreUseCaseTest extends UseCaseTest {
         // given
         final SaveGenreUseCase.Input input = null;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "'SaveGenreUseCase.Input input' cannot be null";
+        final var expectedErrorMessage = "'SaveGenreUseCase.Input' cannot be null";
 
         // when
         final var actualException = Assertions.assertThrows(DomainException.class,
