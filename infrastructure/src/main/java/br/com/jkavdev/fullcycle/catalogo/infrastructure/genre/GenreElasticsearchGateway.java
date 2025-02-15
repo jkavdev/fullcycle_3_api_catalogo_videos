@@ -7,6 +7,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.StreamSupport;
 
 @Component
+@Profile("!development")
 public class GenreElasticsearchGateway implements GenreGateway {
 
     private static final String NAME_PROP = "name";

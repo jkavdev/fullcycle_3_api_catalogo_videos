@@ -532,7 +532,7 @@ public class VideoGraphQLControllerTest {
         final var expectedRating = Fixture.Videos.rating().getName();
         final var expectedDuration = Fixture.duration();
         final String expectedDescription = null;
-        final Integer expectedYearLaunched = null;
+        final var expectedYearLaunched = Fixture.year();
         final var expectedOpened = false;
         final var expectedPublished = false;
         final String expectedVideo = null;
@@ -543,13 +543,16 @@ public class VideoGraphQLControllerTest {
         final var expectedCastMembers = Collections.emptySet();
         final var expectedCategories = Collections.emptySet();
         final var expectedGenres = Collections.emptySet();
-        final Instant expectedDate = null;
+        final var expectedDate = InstantUtils.now();
 
         final var input = new HashMap<String, Object>();
         input.put("id", expectedId);
         input.put("title", expectedTitle);
         input.put("rating", expectedRating);
         input.put("duration", expectedDuration);
+        input.put("yearLaunched", expectedYearLaunched);
+        input.put("createdAt", expectedDate);
+        input.put("updatedAt", expectedDate);
 
         final var query = """
                 mutation SaveVideo($input: VideoInput!){
@@ -591,8 +594,8 @@ public class VideoGraphQLControllerTest {
         Assertions.assertEquals(expectedCastMembers, actualVideo.castMembers());
         Assertions.assertEquals(expectedCategories, actualVideo.categories());
         Assertions.assertEquals(expectedGenres, actualVideo.genres());
-        Assertions.assertEquals(expectedDate, actualVideo.createdAt());
-        Assertions.assertEquals(expectedDate, actualVideo.updatedAt());
+        Assertions.assertEquals(expectedDate.toString(), actualVideo.createdAt());
+        Assertions.assertEquals(expectedDate.toString(), actualVideo.updatedAt());
     }
 
     public record VideoOutput(

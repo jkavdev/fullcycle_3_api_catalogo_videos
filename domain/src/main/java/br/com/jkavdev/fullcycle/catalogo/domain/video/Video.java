@@ -72,8 +72,8 @@ public class Video {
         this.rating = Rating.of(rating).orElse(null);
         this.opened = opened;
         this.published = published;
-        this.createdAt = Instant.parse(createdAt);
-        this.updatedAt = Instant.parse(updatedAt);
+        this.createdAt = createdAt != null ? Instant.parse(createdAt) : null;
+        this.updatedAt = updatedAt != null ? Instant.parse(updatedAt) : null;
         this.banner = banner;
         this.thumbnail = thumbnail;
         this.thumbnailHalf = thumbnailHalf;

@@ -113,3 +113,59 @@ query MyQuery {
     updatedAt
   }
 }
+
+// salvando video apenas com campos requeridos
+
+mutation MyMutation($input: VideoInput = {id: "", title: "", yearLaunched: 10, rating: "", duration: 1.5, createdAt: "", updatedAt: ""}) {
+  saveVideo(input: $input) {
+    id
+  }
+}
+
+{
+  "input": {
+    "id": "qualquerId",
+    "title": "qualquerTitle",
+    "rating": "L",
+    "duration": 1.5,
+    "yearLaunched": 2024,
+    "createdAt": "2025-02-06T06:33:16.830Z",
+    "updatedAt": "2025-02-06T06:33:16.830Z"
+  }
+}
+
+// com todos os parametros de relacionamento
+{
+  "input": {
+    "id": "qualquerId",
+    "title": "qualquerTitle",
+    "rating": "L",
+    "duration": 1.5,
+    "yearLaunched": 2024,
+    "createdAt": "2025-02-06T06:33:16.830Z",
+    "updatedAt": "2025-02-06T06:33:16.830Z",
+    "categoriesId": ["qualquerId"],
+    "castMembersId": ["2121"],
+    "categoriesId": ["31fafcd592a048109bcc0dsbdd38743213"]
+  }
+}
+
+// consultando tudo
+query MyQuery {
+  videos {
+    id
+    title
+  }
+  genres {
+    id
+    name
+  }
+  categories {
+    id
+    name
+  }
+  castMembers {
+    id
+    name
+  }
+}

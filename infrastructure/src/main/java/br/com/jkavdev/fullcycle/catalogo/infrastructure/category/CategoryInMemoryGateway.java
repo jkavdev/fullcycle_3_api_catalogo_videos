@@ -1,8 +1,8 @@
-package br.com.jkavdev.fullcycle.catalogo.infrastructure.genre;
+package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
-import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
-import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
-import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.CategoryGateway;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -12,18 +12,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @Profile("development")
-public class GenreInMemoryGateway implements GenreGateway {
+public class CategoryInMemoryGateway implements CategoryGateway {
 
-    private final ConcurrentHashMap<String, Genre> db;
+    private final ConcurrentHashMap<String, Category> db;
 
-    public GenreInMemoryGateway() {
+    public CategoryInMemoryGateway() {
         this.db = new ConcurrentHashMap<>();
     }
 
     @Override
-    public Genre save(Genre aGenre) {
-        this.db.put(aGenre.id(), aGenre);
-        return aGenre;
+    public Category save(Category aCategory) {
+        this.db.put(aCategory.id(), aCategory);
+        return aCategory;
     }
 
     @Override
@@ -32,12 +32,12 @@ public class GenreInMemoryGateway implements GenreGateway {
     }
 
     @Override
-    public Optional<Genre> findById(String anId) {
+    public Optional<Category> findById(String anId) {
         return Optional.ofNullable(db.get(anId));
     }
 
     @Override
-    public List<Genre> findAllById(Set<String> ids) {
+    public List<Category> findAllById(Set<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
@@ -47,7 +47,7 @@ public class GenreInMemoryGateway implements GenreGateway {
     }
 
     @Override
-    public Pagination<Genre> findAll(GenreSearchQuery aQuery) {
+    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
         final var values = db.values();
         return new Pagination<>(aQuery.page(), aQuery.perPage(), values.size(), new ArrayList<>(values));
     }
