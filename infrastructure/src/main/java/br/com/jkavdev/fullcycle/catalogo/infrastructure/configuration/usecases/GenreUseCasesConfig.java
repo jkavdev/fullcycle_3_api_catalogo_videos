@@ -1,6 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.usecases;
 
 import br.com.jkavdev.fullcycle.catalogo.application.genre.delete.DeleteGenreUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.genre.get.GetAllByIdUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.list.ListGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
@@ -31,5 +32,10 @@ public class GenreUseCasesConfig {
     @Bean
     ListGenreUseCase listGenreUseCase() {
         return new ListGenreUseCase(genreGateway);
+    }
+
+    @Bean
+    GetAllByIdUseCase getAllByIdUseCase() {
+        return new GetAllByIdUseCase(genreGateway);
     }
 }

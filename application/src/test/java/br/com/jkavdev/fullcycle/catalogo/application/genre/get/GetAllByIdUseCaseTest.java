@@ -2,7 +2,6 @@ package br.com.jkavdev.fullcycle.catalogo.application.genre.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
-import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import org.junit.jupiter.api.Assertions;

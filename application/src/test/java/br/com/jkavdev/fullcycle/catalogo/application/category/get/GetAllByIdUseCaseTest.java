@@ -2,10 +2,8 @@ package br.com.jkavdev.fullcycle.catalogo.application.category.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
-import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategoryGateway;
-import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
