@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class GetAllByIdUseCase extends UseCase<GetAllByIdUseCase.Input, List<GetAllByIdUseCase.Output>> {
+public class GetAllCastMemberByIdUseCase extends UseCase<GetAllCastMemberByIdUseCase.Input, List<GetAllCastMemberByIdUseCase.Output>> {
 
     private final CastMemberGateway castMemberGateway;
 
-    public GetAllByIdUseCase(final CastMemberGateway castMemberGateway) {
+    public GetAllCastMemberByIdUseCase(final CastMemberGateway castMemberGateway) {
         this.castMemberGateway = Objects.requireNonNull(castMemberGateway);
     }
 

@@ -1,7 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.usecases;
 
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.delete.DeleteCastMemberUseCase;
-import br.com.jkavdev.fullcycle.catalogo.application.castmember.get.GetAllByIdUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.castmember.get.GetAllCastMemberByIdUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberGateway;
@@ -35,8 +35,8 @@ public class CastMemberUseCasesConfig {
     }
 
     @Bean
-    GetAllByIdUseCase getAllByIdUseCase() {
-        return new GetAllByIdUseCase(castMemberGateway);
+    GetAllCastMemberByIdUseCase getAllCastMemberByIdUseCase() {
+        return new GetAllCastMemberByIdUseCase(castMemberGateway);
     }
 
 }

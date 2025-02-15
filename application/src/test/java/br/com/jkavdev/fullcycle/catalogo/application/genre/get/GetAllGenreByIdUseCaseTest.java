@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class GetAllByIdUseCaseTest extends UseCaseTest {
+class GetAllGenreByIdUseCaseTest extends UseCaseTest {
 
     @InjectMocks
-    private GetAllByIdUseCase useCase;
+    private GetAllGenreByIdUseCase useCase;
 
     @Mock
     private GenreGateway genreGateway;
@@ -34,14 +34,14 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
         final var expectedIds = genres.stream().map(Genre::id).collect(Collectors.toSet());
 
         final var expectedItems = genres.stream()
-                .map(GetAllByIdUseCase.Output::new)
+                .map(GetAllGenreByIdUseCase.Output::new)
                 .toList();
 
         Mockito.when(genreGateway.findAllById(ArgumentMatchers.any()))
                 .thenReturn(genres);
 
         // when
-        final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));
+        final var actualOutput = useCase.execute(new GetAllGenreByIdUseCase.Input(expectedIds));
 
         // then
         Assertions.assertTrue(
@@ -59,7 +59,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
         final Set<String> expectedIds = null;
 
         // when
-        final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));
+        final var actualOutput = useCase.execute(new GetAllGenreByIdUseCase.Input(expectedIds));
 
         // then
         Assertions.assertTrue(actualOutput.isEmpty());

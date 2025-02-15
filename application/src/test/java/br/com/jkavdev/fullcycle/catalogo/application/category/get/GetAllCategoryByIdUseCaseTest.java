@@ -1,9 +1,9 @@
-package br.com.jkavdev.fullcycle.catalogo.application.castmember.get;
+package br.com.jkavdev.fullcycle.catalogo.application.category.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
-import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
-import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberGateway;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.CategoryGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -15,33 +15,33 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class GetAllByIdUseCaseTest extends UseCaseTest {
+class GetAllCategoryByIdUseCaseTest extends UseCaseTest {
 
     @InjectMocks
-    private GetAllByIdUseCase useCase;
+    private GetAllCategoryByIdUseCase useCase;
 
     @Mock
-    private CastMemberGateway castMemberGateway;
+    private CategoryGateway categoryGateway;
 
     @Test
     public void givenValidQuery_whenCallsAllById_shouldReturnIt() {
         // given
         final var members = List.of(
-                Fixture.CastMembers.gabriel(),
-                Fixture.CastMembers.wesley()
+                Fixture.Categories.aulas(),
+                Fixture.Categories.talks()
         );
 
-        final var expectedIds = members.stream().map(CastMember::id).collect(Collectors.toSet());
+        final var expectedIds = members.stream().map(Category::id).collect(Collectors.toSet());
 
         final var expectedItems = members.stream()
-                .map(GetAllByIdUseCase.Output::new)
+                .map(GetAllCategoryByIdUseCase.Output::new)
                 .toList();
 
-        Mockito.when(castMemberGateway.findAllById(ArgumentMatchers.any()))
+        Mockito.when(categoryGateway.findAllById(ArgumentMatchers.any()))
                 .thenReturn(members);
 
         // when
-        final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));
+        final var actualOutput = useCase.execute(new GetAllCategoryByIdUseCase.Input(expectedIds));
 
         // then
         Assertions.assertTrue(
@@ -49,7 +49,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
                         && expectedItems.containsAll(actualOutput)
         );
 
-        Mockito.verify(castMemberGateway, Mockito.times(1)).findAllById(expectedIds);
+        Mockito.verify(categoryGateway, Mockito.times(1)).findAllById(expectedIds);
 
     }
 
@@ -59,12 +59,12 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
         final Set<String> expectedIds = null;
 
         // when
-        final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));
+        final var actualOutput = useCase.execute(new GetAllCategoryByIdUseCase.Input(expectedIds));
 
         // then
         Assertions.assertTrue(actualOutput.isEmpty());
 
-        Mockito.verify(castMemberGateway, Mockito.never()).findAllById(ArgumentMatchers.any());
+        Mockito.verify(categoryGateway, Mockito.never()).findAllById(ArgumentMatchers.any());
 
     }
 

@@ -135,7 +135,7 @@ public class CategoryRestGatewayTest extends AbstractRestClientTest {
         // given
         final var expectedId = "123";
         final var expectedErrorStatus = 500;
-        final var expecterErrorMessage = "error observed from categories [resourceId::%s] [rating::%s]"
+        final var expecterErrorMessage = "error observed from categories [resourceId::%s] [status::%s]"
                 .formatted(expectedId, expectedErrorStatus);
 
         final var responseBody = writeValueAsString(Map.of("message", "Internal Server Error"));

@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-public class GetAllByIdUseCase extends UseCase<GetAllByIdUseCase.Input, List<GetAllByIdUseCase.Output>> {
+public class GetAllGenreByIdUseCase extends UseCase<GetAllGenreByIdUseCase.Input, List<GetAllGenreByIdUseCase.Output>> {
 
     private final GenreGateway genreGateway;
 
-    public GetAllByIdUseCase(final GenreGateway genreGateway) {
+    public GetAllGenreByIdUseCase(final GenreGateway genreGateway) {
         this.genreGateway = Objects.requireNonNull(genreGateway);
     }
 
