@@ -6,6 +6,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Rating;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -181,6 +183,53 @@ class VideoElasticsearchGatewayTest extends AbstractElasticsearchTest {
         Assertions.assertEquals(expectedThumbnail, actualVideo.thumbnail());
         Assertions.assertEquals(expectedThumbnailHalf, actualVideo.thumbnailHalf());
 
+    }
+
+    @Test
+    public void givenValidId_whenCallsDeleteById_shouldDeleteIt() {
+        // given
+        final var expectedVideo = Fixture.Videos.systemDesign();
+
+        videoRepository.save(VideoDocument.from(expectedVideo));
+
+        final var expectedId = expectedVideo.id();
+        Assertions.assertTrue(videoRepository.existsById(expectedId));
+
+        // when
+        videoGateway.deleteById(expectedId);
+
+        // then
+        Assertions.assertFalse(videoRepository.existsById(expectedId));
+    }
+
+    @Test
+    public void givenAnInvalidId_whenCallsDeleteById_shouldBeOk() {
+        // given
+        final var expectedId = "qualquerId";
+
+        // when
+        // then
+        Assertions.assertDoesNotThrow(() -> videoGateway.deleteById(expectedId));
+    }
+
+    @Test
+    public void givenNullId_whenCallsDeleteById_shouldBeOk() {
+        // given
+        final String expectedId = null;
+
+        // when
+        // then
+        Assertions.assertDoesNotThrow(() -> videoGateway.deleteById(expectedId));
+    }
+
+    @Test
+    public void givenEmptyId_whenCallsDeleteById_shouldBeOk() {
+        // given
+        final var expectedId = "  ";
+
+        // when
+        // then
+        Assertions.assertDoesNotThrow(() -> videoGateway.deleteById(expectedId));
     }
 
 }

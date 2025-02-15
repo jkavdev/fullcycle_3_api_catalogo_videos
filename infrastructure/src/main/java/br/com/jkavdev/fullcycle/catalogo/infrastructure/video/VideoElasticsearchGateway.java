@@ -30,14 +30,17 @@ public class VideoElasticsearchGateway implements VideoGateway {
     }
 
     @Override
-    public Video save(Video video) {
+    public Video save(final Video video) {
         videoRepository.save(VideoDocument.from(video));
         return video;
     }
 
     @Override
-    public void deleteById(String anId) {
-
+    public void deleteById(final String anId) {
+        if (anId == null || anId.isBlank()) {
+            return;
+        }
+        videoRepository.deleteById(anId);
     }
 
     @Override
