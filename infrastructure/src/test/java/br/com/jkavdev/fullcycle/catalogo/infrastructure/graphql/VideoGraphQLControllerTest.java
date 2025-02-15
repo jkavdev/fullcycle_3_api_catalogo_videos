@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.graphql.test.tester.GraphQlTester;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
@@ -100,16 +101,25 @@ public class VideoGraphQLControllerTest {
                   categories {
                     id
                     name
+                    description
                   }
                   castMembersId
                   castMembers {
                     id
                     name
+                    type
+                    createdAt
+                    updatedAt
                   }
                   genresId
                   genres {
                     id
                     name
+                    active
+                    categories
+                    createdAt
+                    updatedAt
+                    deletedAt
                   }
                   createdAt
                   updatedAt
@@ -121,14 +131,12 @@ public class VideoGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualVideos = res.path("videos")
-                .entityList(ListVideoUseCase.Output.class)
+                .entityList(VideoOutput.class)
                 .get();
 
         // then
-        Assertions.assertTrue(
-                expectedVideos.size() == actualVideos.size()
-                        && expectedVideos.containsAll(actualVideos)
-        );
+        compareVideoOutput(castMembers, categories, genres, expectedVideos.get(0), actualVideos.get(0));
+        compareVideoOutput(castMembers, categories, genres, expectedVideos.get(1), actualVideos.get(1));
 
         final var captor = ArgumentCaptor.forClass(ListVideoUseCase.Input.class);
         Mockito.verify(listVideoUseCase, Mockito.times(1)).execute(captor.capture());
@@ -190,7 +198,18 @@ public class VideoGraphQLControllerTest {
 
         final var query = """
                 {
-                 videos(search: "%s",page: %s,perPage: %s,sort: "%s",direction: "%s",rating: "%s",yearLaunched: %s,castMembers: %s,categories: %s,genres: %s) {
+                 videos(
+                    search: "%s",
+                    page: %s,
+                    perPage: %s,
+                    sort: "%s",
+                    direction: "%s",
+                    rating: "%s",
+                    yearLaunched: %s,
+                    castMembers: %s,
+                    categories: %s,
+                    genres: %s
+                ) {
                   id
                   title
                   description
@@ -268,10 +287,21 @@ public class VideoGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWithVariablesWhenCallsListVideosShouldReturn() {
         // given
+        record VideoIdOutput(String id) {
+        }
+
+        final var java21 = Fixture.Videos.java21();
+        final var systemDesign = Fixture.Videos.systemDesign();
+
         final var expectedVideos = List.of(
-                ListVideoUseCase.Output.from(Fixture.Videos.java21()),
-                ListVideoUseCase.Output.from(Fixture.Videos.systemDesign())
+                ListVideoUseCase.Output.from(java21),
+                ListVideoUseCase.Output.from(systemDesign)
         );
+        final var expectedVideosIds = List.of(
+                new VideoIdOutput(java21.id()),
+                new VideoIdOutput(systemDesign.id())
+        );
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -333,35 +363,6 @@ public class VideoGraphQLControllerTest {
                         genres: $genres
                     ) {
                       id
-                      title
-                      description
-                      yearLaunched
-                      rating
-                      duration
-                      opened
-                      published
-                      video
-                      trailer
-                      banner
-                      thumbnail
-                      thumbnailHalf
-                      categoriesId
-                      categories {
-                        id
-                        name
-                      }
-                      castMembersId
-                      castMembers {
-                        id
-                        name
-                      }
-                      genresId
-                      genres {
-                        id
-                        name
-                      }
-                      createdAt
-                      updatedAt
                      }
                 }
                 """;
@@ -381,13 +382,13 @@ public class VideoGraphQLControllerTest {
                 .execute();
 
         final var actualVideos = res.path("videos")
-                .entityList(ListVideoUseCase.Output.class)
+                .entityList(VideoIdOutput.class)
                 .get();
 
         // then
         Assertions.assertTrue(
-                expectedVideos.size() == actualVideos.size()
-                        && expectedVideos.containsAll(actualVideos)
+                actualVideos.size() == expectedVideosIds.size()
+                        && actualVideos.containsAll(expectedVideosIds)
         );
 
         final var captor = ArgumentCaptor.forClass(ListVideoUseCase.Input.class);
@@ -404,6 +405,59 @@ public class VideoGraphQLControllerTest {
         Assertions.assertEquals(expectedCastMembers, actualQuery.castMembers());
         Assertions.assertEquals(expectedCategories, actualQuery.categories());
         Assertions.assertEquals(expectedGenres, actualQuery.genres());
+    }
+
+    private static void compareVideoOutput(
+            final List<GetAllCastMemberByIdUseCase.Output> expectedCastMembers,
+            final List<GetAllCategoryByIdUseCase.Output> expectedCategories,
+            final List<GetAllGenreByIdUseCase.Output> expectedGenres,
+            final ListVideoUseCase.Output expectedVideo,
+            final VideoOutput actualVideo
+    ) {
+        org.assertj.core.api.Assertions.assertThat(actualVideo)
+                .usingRecursiveComparison().ignoringFields("categories", "castMembers", "genres")
+                .isEqualTo(expectedVideo);
+
+        Assertions.assertTrue(
+                actualVideo.castMembers().size() == expectedCastMembers.size()
+                        && actualVideo.castMembers().containsAll(expectedCastMembers)
+        );
+
+        Assertions.assertTrue(
+                actualVideo.categories().size() == expectedCategories.size()
+                        && actualVideo.categories().containsAll(expectedCategories)
+        );
+
+        Assertions.assertTrue(
+                actualVideo.genres().size() == expectedGenres.size()
+                        && actualVideo.genres().containsAll(expectedGenres)
+        );
+    }
+
+    public record VideoOutput(
+            String id,
+            String title,
+            String description,
+            int yearLaunched,
+            String rating,
+            Double duration,
+            boolean opened,
+            boolean published,
+            String banner,
+            String thumbnail,
+            String thumbnailHalf,
+            String trailer,
+            String video,
+            Set<String> categoriesId,
+            List<GetAllCategoryByIdUseCase.Output> categories,
+            Set<String> castMembersId,
+            List<GetAllCastMemberByIdUseCase.Output> castMembers,
+            Set<String> genresId,
+            List<GetAllGenreByIdUseCase.Output> genres,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+
     }
 
 }
