@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class GetAllByIdUseCaseTest extends UseCaseTest {
 
@@ -29,7 +31,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
                 Fixture.CastMembers.wesley()
         );
 
-        final var expectedIds = members.stream().map(CastMember::id).toList();
+        final var expectedIds = members.stream().map(CastMember::id).collect(Collectors.toSet());
 
         final var expectedItems = members.stream()
                 .map(GetAllByIdUseCase.Output::new)
@@ -54,7 +56,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
     @Test
     public void givenNullIds_whenCallsAllById_shouldReturnEmpty() {
         // given
-        final List<String> expectedIds = null;
+        final Set<String> expectedIds = null;
 
         // when
         final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));

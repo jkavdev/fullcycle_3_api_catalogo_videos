@@ -2,8 +2,10 @@ package br.com.jkavdev.fullcycle.catalogo.application.category.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategoryGateway;
+import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -12,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class GetAllByIdUseCaseTest extends UseCaseTest {
 
@@ -29,7 +33,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
                 Fixture.Categories.talks()
         );
 
-        final var expectedIds = members.stream().map(Category::id).toList();
+        final var expectedIds = members.stream().map(Category::id).collect(Collectors.toSet());
 
         final var expectedItems = members.stream()
                 .map(GetAllByIdUseCase.Output::new)
@@ -54,7 +58,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
     @Test
     public void givenNullIds_whenCallsAllById_shouldReturnEmpty() {
         // given
-        final List<String> expectedIds = null;
+        final Set<String> expectedIds = null;
 
         // when
         final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));

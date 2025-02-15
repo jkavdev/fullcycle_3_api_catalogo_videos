@@ -1,7 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.application.genre.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCase;
-import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 
@@ -29,10 +28,10 @@ public class GetAllByIdUseCase extends UseCase<GetAllByIdUseCase.Input, List<Get
                 .toList();
     }
 
-    public record Input(List<String> ids) {
+    public record Input(Set<String> ids) {
         @Override
-        public List<String> ids() {
-            return ids != null ? ids : Collections.emptyList();
+        public Set<String> ids() {
+            return ids != null ? ids : Collections.emptySet();
         }
     }
 

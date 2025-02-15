@@ -5,10 +5,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 //@Component
@@ -37,7 +34,7 @@ public class GenreInMemoryGateway implements GenreGateway {
     }
 
     @Override
-    public List<Genre> findAllById(List<String> ids) {
+    public List<Genre> findAllById(Set<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }

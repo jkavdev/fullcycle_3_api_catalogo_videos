@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.application.genre.get;
 
 import br.com.jkavdev.fullcycle.catalogo.application.UseCaseTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class GetAllByIdUseCaseTest extends UseCaseTest {
 
@@ -29,7 +32,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
                 Fixture.Genres.tech()
         );
 
-        final var expectedIds = genres.stream().map(Genre::id).toList();
+        final var expectedIds = genres.stream().map(Genre::id).collect(Collectors.toSet());
 
         final var expectedItems = genres.stream()
                 .map(GetAllByIdUseCase.Output::new)
@@ -54,7 +57,7 @@ class GetAllByIdUseCaseTest extends UseCaseTest {
     @Test
     public void givenNullIds_whenCallsAllById_shouldReturnEmpty() {
         // given
-        final List<String> expectedIds = null;
+        final Set<String> expectedIds = null;
 
         // when
         final var actualOutput = useCase.execute(new GetAllByIdUseCase.Input(expectedIds));

@@ -17,10 +17,7 @@ import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.StreamSupport;
 
 @Component
@@ -59,7 +56,7 @@ public class GenreElasticsearchGateway implements GenreGateway {
     }
 
     @Override
-    public List<Genre> findAllById(List<String> ids) {
+    public List<Genre> findAllById(Set<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
