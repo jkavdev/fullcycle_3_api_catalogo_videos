@@ -6,9 +6,6 @@ import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoRepository;
-import co.elastic.clients.elasticsearch._types.FieldValue;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,9 +13,9 @@ import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchOperations;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Objects;
+import java.util.Optional;
 
 @Component
 @Profile("!development")
@@ -64,7 +61,6 @@ public class VideoElasticsearchGateway implements VideoGateway {
 
     @Override
     public Pagination<Video> findAll(final VideoSearchQuery aQuery) {
-        final var terms = aQuery.terms();
         final var currentPage = aQuery.page();
         final var itemsPerPage = aQuery.perPage();
 
@@ -72,30 +68,18 @@ public class VideoElasticsearchGateway implements VideoGateway {
                 Sort.by(Sort.Direction.fromString(aQuery.direction()), buildSort(aQuery.sort()));
         final var page = PageRequest.of(currentPage, itemsPerPage, sort);
 
-        final var must = new ArrayList<Query>();
-        must.add(QueryBuilders.term(t -> t.field("published").value(true)));
-
-        if (!CollectionUtils.isEmpty(aQuery.castMembers())) {
-            must.add(QueryBuilders.terms(t -> t.field("cast_members").terms(it -> it.value(fieldValues(aQuery.castMembers())))));
-        }
-        if (!CollectionUtils.isEmpty(aQuery.categories())) {
-            must.add(QueryBuilders.terms(t -> t.field("categories").terms(it -> it.value(fieldValues(aQuery.categories())))));
-        }
-        if (!CollectionUtils.isEmpty(aQuery.genres())) {
-            must.add(QueryBuilders.terms(t -> t.field("genres").terms(it -> it.value(fieldValues(aQuery.genres())))));
-        }
-        if (aQuery.launchedAt() != null) {
-            must.add(QueryBuilders.term(t -> t.field("launched_at").value(aQuery.launchedAt())));
-        }
-        if (aQuery.rating() != null && !aQuery.rating().isBlank()) {
-            must.add(QueryBuilders.term(t -> t.field("rating").value(aQuery.rating())));
-        }
-        if (terms != null && !terms.isBlank()) {
-            must.add(QueryBuilders.queryString(q -> q.fields("title", "description").query("*" + terms + "*")));
-        }
+        final var aQueryBuilder = new VideoQueryBuilder(
+                VideoQueryBuilder.onlyPublished(),
+                VideoQueryBuilder.containingCastMembers(aQuery.castMembers()),
+                VideoQueryBuilder.containingCategories(aQuery.categories()),
+                VideoQueryBuilder.containingGenres(aQuery.genres()),
+                VideoQueryBuilder.launchedAtEquals(aQuery.launchedAt()),
+                VideoQueryBuilder.ratingEquals(aQuery.rating()),
+                VideoQueryBuilder.titleOrDescriptionContaining(aQuery.terms())
+        );
 
         final var query = NativeQuery.builder()
-                .withQuery(QueryBuilders.bool(b -> b.must(must)))
+                .withQuery(aQueryBuilder.build())
                 .withPageable(page)
                 .build();
 
@@ -106,12 +90,6 @@ public class VideoElasticsearchGateway implements VideoGateway {
                 .map(VideoDocument::toVideo)
                 .toList();
         return new Pagination<>(currentPage, itemsPerPage, total, videos);
-    }
-
-    private List<FieldValue> fieldValues(final Set<String> ids) {
-        return ids.stream()
-                .map(FieldValue::of)
-                .toList();
     }
 
     private String buildSort(final String sort) {
