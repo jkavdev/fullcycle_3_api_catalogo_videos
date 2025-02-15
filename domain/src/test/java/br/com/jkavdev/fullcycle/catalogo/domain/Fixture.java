@@ -216,7 +216,6 @@ public final class Fixture {
                     Set.of(IdUtils.uniqueId()),
                     Set.of(IdUtils.uniqueId()),
                     Set.of(IdUtils.uniqueId())
-
             );
         }
 
@@ -240,7 +239,6 @@ public final class Fixture {
                     Set.of(IdUtils.uniqueId()),
                     Set.of(IdUtils.uniqueId()),
                     Set.of(IdUtils.uniqueId())
-
             );
         }
     }
