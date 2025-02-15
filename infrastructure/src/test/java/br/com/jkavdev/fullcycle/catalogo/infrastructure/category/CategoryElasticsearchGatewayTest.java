@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.category;
 
 import br.com.jkavdev.fullcycle.catalogo.AbstractElasticsearchTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.persistence.CategoryDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.persistence.CategoryRepository;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
@@ -234,6 +238,50 @@ public class CategoryElasticsearchGatewayTest extends AbstractElasticsearchTest 
         if (StringUtils.isNotEmpty(expectedName)) {
             Assertions.assertEquals(expectedName, actualOutput.data().get(0).name());
         }
+    }
+
+    @Test
+    public void givenValidIds_whenCallsFindAllByIds_shouldReturnElements() {
+        // given
+        final var talks = categoryRepository.save(CategoryDocument.from(Fixture.Categories.talks()));
+        categoryRepository.save(CategoryDocument.from(Fixture.Categories.lives()));
+        final var aulas = categoryRepository.save(CategoryDocument.from(Fixture.Categories.aulas()));
+
+        final var expectedSize = 2;
+        final var expectedIds = List.of(talks.id(), aulas.id());
+
+        // when
+        final var actualOutput = categoryGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertEquals(expectedSize, actualOutput.size());
+
+        final var actualIds = actualOutput.stream().map(Category::id).toList();
+        Assertions.assertTrue(expectedIds.containsAll(actualIds));
+    }
+
+    @Test
+    public void givenNullIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = null;
+
+        // when
+        final var actualOutput = categoryGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
+    }
+
+    @Test
+    public void givenEmptyIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = Collections.emptyList();
+
+        // when
+        final var actualOutput = categoryGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
     }
 
     private void mockCategories() {
