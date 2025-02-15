@@ -79,9 +79,9 @@ public class VideoDocument {
             final String updatedAt,
             final String video,
             final String trailer,
-            final String banner,
             final String thumbnail,
             final String thumbnailHalf,
+            final String banner,
             final Set<String> castMembers,
             final Set<String> categories,
             final Set<String> genres
@@ -120,11 +120,11 @@ public class VideoDocument {
                 video.updatedAt().toString(),
                 video.video(),
                 video.trailer(),
-                video.banner(),
                 video.thumbnail(),
                 video.thumbnailHalf(),
-                video.categories(),
+                video.banner(),
                 video.castMembers(),
+                video.categories(),
                 video.genres()
         );
     }
@@ -139,13 +139,13 @@ public class VideoDocument {
                 rating(),
                 opened(),
                 published(),
-                createdAt().toString(),
-                updatedAt().toString(),
+                createdAt(),
+                updatedAt(),
+                video(),
+                trailer(),
                 banner(),
                 thumbnail(),
                 thumbnailHalf(),
-                trailer(),
-                video(),
                 categories(),
                 castMembers(),
                 genres()
