@@ -3,12 +3,9 @@ package br.com.jkavdev.fullcycle.catalogo.application.video.save;
 import br.com.jkavdev.fullcycle.catalogo.application.UseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.DomainException;
 import br.com.jkavdev.fullcycle.catalogo.domain.validation.Error;
-import br.com.jkavdev.fullcycle.catalogo.domain.video.Rating;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoGateway;
 
-import java.time.Instant;
-import java.time.Year;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,28 +22,27 @@ public class SaveVideoUseCase extends UseCase<SaveVideoUseCase.Input, SaveVideoU
         if (input == null) {
             throw DomainException.with(new Error("'SaveVideoUseCase.Input' cannot be null"));
         }
-        final var video = Video.with(
+
+        final var video = videoGateway.save(Video.with(
                 input.id(),
                 input.title(),
                 input.description(),
-                input.launchedAt().getValue(),
+                input.launchedAt(),
                 input.duration(),
-                input.rating().getName(),
+                input.rating(),
                 input.opened(),
                 input.published(),
-                input.createdAt().toString(),
-                input.updatedAt().toString(),
+                input.createdAt(),
+                input.updatedAt(),
+                input.video(),
+                input.trailer(),
                 input.banner(),
                 input.thumbnail(),
                 input.thumbnailHalf(),
-                input.trailer(),
-                input.video(),
                 input.categories(),
                 input.castMembers(),
                 input.genres()
-        );
-
-        videoGateway.save(video);
+        ));
 
         return new Output(video.id());
     }
@@ -55,29 +51,25 @@ public class SaveVideoUseCase extends UseCase<SaveVideoUseCase.Input, SaveVideoU
             String id,
             String title,
             String description,
-            Year launchedAt,
+            Integer launchedAt,
             double duration,
-            Rating rating,
+            String rating,
             boolean opened,
             boolean published,
-            Instant createdAt,
-            Instant updatedAt,
+            String createdAt,
+            String updatedAt,
+            String video,
+            String trailer,
             String banner,
             String thumbnail,
             String thumbnailHalf,
-            String trailer,
-            String video,
             Set<String> categories,
             Set<String> castMembers,
             Set<String> genres
     ) {
-
     }
 
-    public record Output(
-            String id
-    ) {
-
+    public record Output(String id) {
     }
-
 }
+

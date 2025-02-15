@@ -7,8 +7,8 @@ extend type Query {
         direction: String = "asc",
         rating: String,
         yearLaunched: Int,
-        categories: [String] = [],
         castMembers: [String] = [],
+        categories: [String] = [],
         genres: [String] = [],
     ): [Video]!
 }
@@ -21,7 +21,7 @@ extend type Mutation {
 type Video {
     id: ID!
     title: String!
-    description: String!
+    description: String
     yearLaunched: Int
     rating: String!
     duration: Float
@@ -32,40 +32,29 @@ type Video {
     banner: String!
     thumbnail: String!
     thumbnailHalf: String!
-    categoriesId: [String]!
-    categories: [Category]!
     castMembersId: [String]!
     castMembers: [CastMember]!
+    categoriesId: [String]!
+    categories: [Category]!
     genresId: [String]!
     genres: [Genre]!
     createdAt: String!
     updatedAt: String!
 }
 
-""" A Video """
-type VideoResume {
-    id: ID!
-    name: String!
-    active: Boolean!
-    categories: [String]!
-    createdAt: String!
-    updatedAt: String!
-    deletedAt: String
-}
-
-""" A Genre """
+""" A saveVideo result """
 type NewVideo {
     id: ID!
 }
 
-""" A input to persist a Genre """
+""" A input to persist a Video """
 input VideoInput {
     id: ID!
     title: String!
-    description: String!
+    description: String
     yearLaunched: Int
     rating: String!
-    duration: Float
+    duration: Float!
     opened: Boolean
     published: Boolean
     video: String
@@ -73,8 +62,8 @@ input VideoInput {
     banner: String
     thumbnail: String
     thumbnailHalf: String
-    categoriesId: [String]
     castMembersId: [String]
+    categoriesId: [String]
     genresId: [String]
     createdAt: String
     updatedAt: String
