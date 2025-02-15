@@ -16,8 +16,11 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 @Component
 public class CastMemberElasticsearchGateway implements CastMemberGateway {
@@ -52,6 +55,16 @@ public class CastMemberElasticsearchGateway implements CastMemberGateway {
     public Optional<CastMember> findById(final String anId) {
         return castMemberRepository.findById(anId)
                 .map(CastMemberDocument::toCastMember);
+    }
+
+    @Override
+    public List<CastMember> findAllById(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return StreamSupport.stream(castMemberRepository.findAllById(ids).spliterator(), false)
+                .map(CastMemberDocument::toCastMember)
+                .toList();
     }
 
     @Override

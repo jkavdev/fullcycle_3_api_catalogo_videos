@@ -2,6 +2,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember;
 
 import br.com.jkavdev.fullcycle.catalogo.AbstractElasticsearchTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.persistence.CastMemberRepository;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
 
 public class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTest {
 
@@ -232,6 +236,50 @@ public class CastMemberElasticsearchGatewayTest extends AbstractElasticsearchTes
         if (StringUtils.isNotEmpty(expectedName)) {
             Assertions.assertEquals(expectedName, actualOutput.data().get(0).name());
         }
+    }
+
+    @Test
+    public void givenValidIds_whenCallsFindAllByIds_shouldReturnElements() {
+        // given
+        final var gabriel = castMemberRepository.save(CastMemberDocument.from(Fixture.CastMembers.gabriel()));
+        castMemberRepository.save(CastMemberDocument.from(Fixture.CastMembers.wesley()));
+        final var leonan = castMemberRepository.save(CastMemberDocument.from(Fixture.CastMembers.leonan()));
+
+        final var expectedSize = 2;
+        final var expectedIds = List.of(gabriel.id(), leonan.id());
+
+        // when
+        final var actualOutput = castMemberGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertEquals(expectedSize, actualOutput.size());
+
+        final var actualIds = actualOutput.stream().map(CastMember::id).toList();
+        Assertions.assertTrue(expectedIds.containsAll(actualIds));
+    }
+
+    @Test
+    public void givenNullIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = null;
+
+        // when
+        final var actualOutput = castMemberGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
+    }
+
+    @Test
+    public void givenEmptyIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = Collections.emptyList();
+
+        // when
+        final var actualOutput = castMemberGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
     }
 
     private void mockCastMembers() {
