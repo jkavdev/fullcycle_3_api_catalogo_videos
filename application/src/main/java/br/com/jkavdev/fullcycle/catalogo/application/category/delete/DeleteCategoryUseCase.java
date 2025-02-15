@@ -1,11 +1,11 @@
 package br.com.jkavdev.fullcycle.catalogo.application.category.delete;
 
-import br.com.jkavdev.fullcycle.catalogo.application.UnityUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.UnitUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategoryGateway;
 
 import java.util.Objects;
 
-public class DeleteCategoryUseCase extends UnityUseCase<String> {
+public class DeleteCategoryUseCase extends UnitUseCase<String> {
 
     private final CategoryGateway categoryGateway;
 

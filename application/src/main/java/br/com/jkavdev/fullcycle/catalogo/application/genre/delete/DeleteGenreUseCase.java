@@ -1,11 +1,11 @@
 package br.com.jkavdev.fullcycle.catalogo.application.genre.delete;
 
-import br.com.jkavdev.fullcycle.catalogo.application.UnityUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.UnitUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 
 import java.util.Objects;
 
-public class DeleteGenreUseCase extends UnityUseCase<DeleteGenreUseCase.Input> {
+public class DeleteGenreUseCase extends UnitUseCase<DeleteGenreUseCase.Input> {
 
     private final GenreGateway genreGateway;
 

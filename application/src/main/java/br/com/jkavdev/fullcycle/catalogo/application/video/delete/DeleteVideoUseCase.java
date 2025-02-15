@@ -1,11 +1,11 @@
 package br.com.jkavdev.fullcycle.catalogo.application.video.delete;
 
-import br.com.jkavdev.fullcycle.catalogo.application.UnityUseCase;
+import br.com.jkavdev.fullcycle.catalogo.application.UnitUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoGateway;
 
 import java.util.Objects;
 
-public class DeleteVideoUseCase extends UnityUseCase<DeleteVideoUseCase.Input> {
+public class DeleteVideoUseCase extends UnitUseCase<DeleteVideoUseCase.Input> {
 
     private final VideoGateway videoGateway;
 
