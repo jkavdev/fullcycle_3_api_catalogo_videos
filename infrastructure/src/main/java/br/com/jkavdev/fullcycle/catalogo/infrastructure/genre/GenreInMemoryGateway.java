@@ -4,9 +4,10 @@ import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -33,6 +34,16 @@ public class GenreInMemoryGateway implements GenreGateway {
     @Override
     public Optional<Genre> findById(String anId) {
         return Optional.ofNullable(db.get(anId));
+    }
+
+    @Override
+    public List<Genre> findAllById(List<String> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return ids.stream()
+                .map(db::get)
+                .toList();
     }
 
     @Override

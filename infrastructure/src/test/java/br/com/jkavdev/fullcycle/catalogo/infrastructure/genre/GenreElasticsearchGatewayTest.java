@@ -2,10 +2,12 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.genre;
 
 import br.com.jkavdev.fullcycle.catalogo.AbstractElasticsearchTest;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.Genre;
 import br.com.jkavdev.fullcycle.catalogo.domain.genre.GenreSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.persistence.CategoryDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +17,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 class GenreElasticsearchGatewayTest extends AbstractElasticsearchTest {
@@ -359,6 +363,50 @@ class GenreElasticsearchGatewayTest extends AbstractElasticsearchTest {
         if (StringUtils.isNotEmpty(expectedName)) {
             Assertions.assertEquals(expectedName, actualOutput.data().get(0).name());
         }
+    }
+
+    @Test
+    public void givenValidIds_whenCallsFindAllByIds_shouldReturnElements() {
+        // given
+        final var tech = genreRepository.save(GenreDocument.from(Fixture.Genres.tech()));
+        genreRepository.save(GenreDocument.from(Fixture.Genres.business()));
+        final var marketing = genreRepository.save(GenreDocument.from(Fixture.Genres.marketing()));
+
+        final var expectedSize = 2;
+        final var expectedIds = List.of(tech.id(), marketing.id());
+
+        // when
+        final var actualOutput = genreGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertEquals(expectedSize, actualOutput.size());
+
+        final var actualIds = actualOutput.stream().map(Genre::id).toList();
+        Assertions.assertTrue(expectedIds.containsAll(actualIds));
+    }
+
+    @Test
+    public void givenNullIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = null;
+
+        // when
+        final var actualOutput = genreGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
+    }
+
+    @Test
+    public void givenEmptyIds_whenCallsFindAllByIds_shouldReturnEmpty() {
+        // given
+        final List<String> expectedIds = Collections.emptyList();
+
+        // when
+        final var actualOutput = genreGateway.findAllById(expectedIds);
+
+        // then
+        Assertions.assertTrue(actualOutput.isEmpty());
     }
 
     private void mockGenres() {
