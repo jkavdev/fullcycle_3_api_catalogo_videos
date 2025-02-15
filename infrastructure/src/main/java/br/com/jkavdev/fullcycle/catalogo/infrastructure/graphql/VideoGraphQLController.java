@@ -4,6 +4,14 @@ import br.com.jkavdev.fullcycle.catalogo.application.castmember.get.GetAllCastMe
 import br.com.jkavdev.fullcycle.catalogo.application.category.get.GetAllCategoryByIdUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.get.GetAllGenreByIdUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.video.list.ListVideoUseCase;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMemberPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.GqlCategoryPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategory;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GqlGenrePresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GqlGenre;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.GqlVideoPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.GqlVideo;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -37,7 +45,7 @@ public class VideoGraphQLController {
     }
 
     @QueryMapping
-    public List<ListVideoUseCase.Output> videos(
+    public List<GqlVideo> videos(
             @Argument final String search,
             @Argument final int page,
             @Argument final int perPage,
@@ -54,22 +62,36 @@ public class VideoGraphQLController {
                         page, perPage, search, sort, direction, rating, yearLaunched, castMembers, categories, genres
                 );
 
-        return listVideoUseCase.execute(input).data();
+        return listVideoUseCase.execute(input)
+                .map(GqlVideoPresenter::present)
+                .data();
     }
 
     @SchemaMapping(typeName = "Video", field = "castMembers")
-    public List<GetAllCastMemberByIdUseCase.Output> castMembers(final ListVideoUseCase.Output video) {
-        return getAllCastMemberByIdUseCase.execute(new GetAllCastMemberByIdUseCase.Input(video.castMembersId()));
+    public List<GqlCastMember> castMembers(final GqlVideo video) {
+        return getAllCastMemberByIdUseCase.execute(
+                        new GetAllCastMemberByIdUseCase.Input(video.castMembersId())
+                ).stream()
+                .map(GqlCastMemberPresenter::present)
+                .toList();
     }
 
     @SchemaMapping(typeName = "Video", field = "categories")
-    public List<GetAllCategoryByIdUseCase.Output> categories(final ListVideoUseCase.Output video) {
-        return getAllCategoryByIdUseCase.execute(new GetAllCategoryByIdUseCase.Input(video.categoriesId()));
+    public List<GqlCategory> categories(final GqlVideo video) {
+        return getAllCategoryByIdUseCase.execute(
+                        new GetAllCategoryByIdUseCase.Input(video.categoriesId())
+                ).stream()
+                .map(GqlCategoryPresenter::present)
+                .toList();
     }
 
     @SchemaMapping(typeName = "Video", field = "genres")
-    public List<GetAllGenreByIdUseCase.Output> genres(final ListVideoUseCase.Output video) {
-        return getAllGenreByIdUseCase.execute(new GetAllGenreByIdUseCase.Input(video.genresId()));
+    public List<GqlGenre> genres(final GqlVideo video) {
+        return getAllGenreByIdUseCase.execute(
+                        new GetAllGenreByIdUseCase.Input(video.genresId())
+                ).stream()
+                .map(GqlGenrePresenter::present)
+                .toList();
     }
 
 }

@@ -1,11 +1,11 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
-import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
-import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryInput;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.GqlCategoryPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategoryInput;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategory;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -30,7 +30,7 @@ public class CategoryGraphQLController {
     }
 
     @QueryMapping
-    public List<ListCategoryOutput> categories(
+    public List<GqlCategory> categories(
             @Argument final String search,
             @Argument final int page,
             @Argument final int perPage,
@@ -40,11 +40,13 @@ public class CategoryGraphQLController {
         final var aQuery =
                 new CategorySearchQuery(page, perPage, search, sort, direction);
 
-        return listCategoryUseCase.execute(aQuery).data();
+        return listCategoryUseCase.execute(aQuery)
+                .map(GqlCategoryPresenter::present)
+                .data();
     }
 
     @MutationMapping
-    public Category saveCategory(@Argument final CategoryInput input) {
-        return saveCategoryUseCase.execute(input.toCategory());
+    public GqlCategory saveCategory(@Argument final GqlCategoryInput input) {
+        return GqlCategoryPresenter.present(saveCategoryUseCase.execute(input.toCategory()));
     }
 }

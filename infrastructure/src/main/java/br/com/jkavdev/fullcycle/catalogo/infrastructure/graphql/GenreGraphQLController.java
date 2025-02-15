@@ -2,7 +2,9 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
 import br.com.jkavdev.fullcycle.catalogo.application.genre.list.ListGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreInput;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GqlGenrePresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GqlGenreInput;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GqlGenre;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -28,7 +30,7 @@ public class GenreGraphQLController {
     }
 
     @QueryMapping
-    public List<ListGenreUseCase.Output> genres(
+    public List<GqlGenre> genres(
             @Argument final String search,
             @Argument final int page,
             @Argument final int perPage,
@@ -39,11 +41,13 @@ public class GenreGraphQLController {
         final var input =
                 new ListGenreUseCase.Input(page, perPage, search, sort, direction, categories);
 
-        return listGenreUseCase.execute(input).data();
+        return listGenreUseCase.execute(input)
+                .map(GqlGenrePresenter::present)
+                .data();
     }
 
     @MutationMapping
-    public SaveGenreUseCase.Output saveGenre(@Argument(name = "input") final GenreInput genreInput) {
+    public SaveGenreUseCase.Output saveGenre(@Argument(name = "input") final GqlGenreInput genreInput) {
         final var input = new SaveGenreUseCase.Input(
                 genreInput.id(), genreInput.name(), genreInput.active(), genreInput.categories(), genreInput.createdAt(), genreInput.updatedAt(), genreInput.deletedAt()
         );

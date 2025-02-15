@@ -7,6 +7,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GqlGenrePresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GqlGenre;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,10 +41,15 @@ public class GenreGraphQLControllerTest {
     @Test
     public void givenDefaultArgumentsWhenCallsListGenresShouldReturn() {
         // given
-        final var expectedGenres = List.of(
+        final var genres = List.of(
                 ListGenreUseCase.Output.from(Fixture.Genres.business()),
                 ListGenreUseCase.Output.from(Fixture.Genres.tech())
         );
+
+        final var expectedGenres = genres.stream()
+                .map(GqlGenrePresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -52,7 +59,7 @@ public class GenreGraphQLControllerTest {
 
         Mockito.when(listGenreUseCase.execute(ArgumentMatchers.any()))
                 .thenReturn(
-                        new Pagination<>(expectedPage, expectedPerPage, expectedGenres.size(), expectedGenres
+                        new Pagination<>(expectedPage, expectedPerPage, genres.size(), genres
                         ));
 
         final var query = """
@@ -73,7 +80,7 @@ public class GenreGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualGenres = res.path("genres")
-                .entityList(ListGenreUseCase.Output.class)
+                .entityList(GqlGenre.class)
                 .get();
 
         // then
@@ -97,10 +104,15 @@ public class GenreGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWhenCallsListGenresShouldReturn() {
         // given
-        final var expectedGenres = List.of(
+        final var genres = List.of(
                 ListGenreUseCase.Output.from(Fixture.Genres.business()),
                 ListGenreUseCase.Output.from(Fixture.Genres.tech())
         );
+
+        final var expectedGenres = genres.stream()
+                .map(GqlGenrePresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -110,7 +122,7 @@ public class GenreGraphQLControllerTest {
 
         Mockito.when(listGenreUseCase.execute(ArgumentMatchers.any()))
                 .thenReturn(
-                        new Pagination<>(expectedPage, expectedPerPage, expectedGenres.size(), expectedGenres
+                        new Pagination<>(expectedPage, expectedPerPage, genres.size(), genres
                         ));
 
         final var query = """
@@ -131,7 +143,7 @@ public class GenreGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualGenres = res.path("genres")
-                .entityList(ListGenreUseCase.Output.class)
+                .entityList(GqlGenre.class)
                 .get();
 
         // then
@@ -155,10 +167,15 @@ public class GenreGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWithVariablesWhenCallsListGenresShouldReturn() {
         // given
-        final var expectedGenres = List.of(
+        final var genres = List.of(
                 ListGenreUseCase.Output.from(Fixture.Genres.business()),
                 ListGenreUseCase.Output.from(Fixture.Genres.tech())
         );
+
+        final var expectedGenres = genres.stream()
+                .map(GqlGenrePresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -168,7 +185,7 @@ public class GenreGraphQLControllerTest {
 
         Mockito.when(listGenreUseCase.execute(ArgumentMatchers.any()))
                 .thenReturn(
-                        new Pagination<>(expectedPage, expectedPerPage, expectedGenres.size(), expectedGenres
+                        new Pagination<>(expectedPage, expectedPerPage, genres.size(), genres
                         ));
 
         final var query = """
@@ -197,7 +214,7 @@ public class GenreGraphQLControllerTest {
                 .execute();
 
         final var actualGenres = res.path("genres")
-                .entityList(ListGenreUseCase.Output.class)
+                .entityList(GqlGenre.class)
                 .get();
 
         // then
@@ -324,7 +341,7 @@ public class GenreGraphQLControllerTest {
         Assertions.assertEquals(expectedCategories, actualGenre.categories());
         Assertions.assertEquals(expectedDate, actualGenre.createdAt());
         Assertions.assertEquals(expectedDate, actualGenre.updatedAt());
-        Assertions.assertNull( actualGenre.deletedAt());
+        Assertions.assertNull(actualGenre.deletedAt());
     }
 
 }

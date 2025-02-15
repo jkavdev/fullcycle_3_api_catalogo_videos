@@ -11,6 +11,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberType;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMemberPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -40,10 +42,15 @@ public class CastMemberGraphQLControllerTest {
     @Test
     public void givenDefaultArgumentsWhenCallsListCastMembersShouldReturn() {
         // given
-        final var expectedMembers = List.of(
+        final var members = List.of(
                 ListCastMemberOutput.from(Fixture.CastMembers.gabriel()),
                 ListCastMemberOutput.from(Fixture.CastMembers.wesley())
         );
+
+        final var expectedMembers = members.stream()
+                .map(GqlCastMemberPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -51,7 +58,7 @@ public class CastMemberGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCastMemberUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedMembers.size(), expectedMembers));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, members.size(), members));
 
         final var query = """
                 {
@@ -69,7 +76,7 @@ public class CastMemberGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualMembers = res.path("castMembers")
-                .entityList(ListCastMemberOutput.class)
+                .entityList(GqlCastMember.class)
                 .get();
 
         // then
@@ -92,10 +99,15 @@ public class CastMemberGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWhenCallsListCastMembersShouldReturn() {
         // given
-        final var expectedMembers = List.of(
+        final var members = List.of(
                 ListCastMemberOutput.from(Fixture.CastMembers.gabriel()),
                 ListCastMemberOutput.from(Fixture.CastMembers.wesley())
         );
+
+        final var expectedMembers = members.stream()
+                .map(GqlCastMemberPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -103,7 +115,7 @@ public class CastMemberGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCastMemberUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedMembers.size(), expectedMembers));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, members.size(), members));
 
         final var query = """
                 {
@@ -121,7 +133,7 @@ public class CastMemberGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualCategories = res.path("castMembers")
-                .entityList(ListCastMemberOutput.class)
+                .entityList(GqlCastMember.class)
                 .get();
 
         // then
@@ -144,10 +156,15 @@ public class CastMemberGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWithVariablesWhenCallsListCastMembersShouldReturn() {
         // given
-        final var expectedMembers = List.of(
+        final var members = List.of(
                 ListCastMemberOutput.from(Fixture.CastMembers.gabriel()),
                 ListCastMemberOutput.from(Fixture.CastMembers.wesley())
         );
+
+        final var expectedMembers = members.stream()
+                .map(GqlCastMemberPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -155,7 +172,7 @@ public class CastMemberGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCastMemberUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedMembers.size(), expectedMembers));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, members.size(), members));
 
         final var query = """
                 query AllCastMembers($search: String, $page: Int, $perPage: Int, $sort: String, $direction: String){
@@ -180,7 +197,7 @@ public class CastMemberGraphQLControllerTest {
                 .execute();
 
         final var actualMembers = res.path("castMembers")
-                .entityList(ListCastMemberOutput.class)
+                .entityList(GqlCastMember.class)
                 .get();
 
         // then

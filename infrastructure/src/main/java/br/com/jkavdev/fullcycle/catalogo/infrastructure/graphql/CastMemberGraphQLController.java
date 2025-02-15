@@ -1,11 +1,11 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
-import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
-import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMember;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.CastMemberDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMemberPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMemberDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -30,7 +30,7 @@ public class CastMemberGraphQLController {
     }
 
     @QueryMapping
-    public List<ListCastMemberOutput> castMembers(
+    public List<GqlCastMember> castMembers(
             @Argument final String search,
             @Argument final int page,
             @Argument final int perPage,
@@ -40,12 +40,14 @@ public class CastMemberGraphQLController {
         final var aQuery =
                 new CastMemberSearchQuery(page, perPage, search, sort, direction);
 
-        return listCastMemberUseCase.execute(aQuery).data();
+        return listCastMemberUseCase.execute(aQuery)
+                .map(GqlCastMemberPresenter::present)
+                .data();
     }
 
     @MutationMapping
-    public CastMember saveCastMember(@Argument final CastMemberDto input) {
-        return saveCastMemberUseCase.execute(input.toCastMember());
+    public GqlCastMember saveCastMember(@Argument final GqlCastMemberDto input) {
+        return GqlCastMemberPresenter.present(saveCastMemberUseCase.execute(input.toCastMember()));
     }
 
 }

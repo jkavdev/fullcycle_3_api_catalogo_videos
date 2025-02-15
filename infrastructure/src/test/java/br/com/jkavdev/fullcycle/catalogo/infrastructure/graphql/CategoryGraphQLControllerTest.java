@@ -1,5 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.graphql;
 
+import br.com.jkavdev.fullcycle.catalogo.GraphQLControllerTest;
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryOutput;
 import br.com.jkavdev.fullcycle.catalogo.application.category.list.ListCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
@@ -9,7 +10,8 @@ import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
-import br.com.jkavdev.fullcycle.catalogo.GraphQLControllerTest;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.GqlCategoryPresenter;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -40,10 +42,15 @@ public class CategoryGraphQLControllerTest {
     @Test
     public void givenDefaultArgumentsWhenCallsListCategoriesShouldReturn() {
         // given
-        final var expectedCategories = List.of(
+        final var categories = List.of(
                 ListCategoryOutput.from(Fixture.Categories.aulas()),
                 ListCategoryOutput.from(Fixture.Categories.lives())
         );
+
+        final var expectedCategories = categories.stream()
+                .map(GqlCategoryPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -51,13 +58,14 @@ public class CategoryGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCategoryUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedCategories.size(), expectedCategories));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories));
 
         final var query = """
                 {
                  categories {
                   id
                   name
+                  description
                  }
                 }
                 """;
@@ -66,7 +74,7 @@ public class CategoryGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualCategories = res.path("categories")
-                .entityList(ListCategoryOutput.class)
+                .entityList(GqlCategory.class)
                 .get();
 
         // then
@@ -89,10 +97,15 @@ public class CategoryGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWhenCallsListCategoriesShouldReturn() {
         // given
-        final var expectedCategories = List.of(
+        final var categories = List.of(
                 ListCategoryOutput.from(Fixture.Categories.aulas()),
                 ListCategoryOutput.from(Fixture.Categories.lives())
         );
+
+        final var expectedCategories = categories.stream()
+                .map(GqlCategoryPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -100,13 +113,14 @@ public class CategoryGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCategoryUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedCategories.size(), expectedCategories));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories));
 
         final var query = """
                 {
                  categories(search: "%s", page: %s, perPage: %s, sort: "%s", direction: "%s") {
                   id
                   name
+                  description
                  }
                 }
                 """.formatted(expectedSearch, expectedPage, expectedPerPage, expectedSort, expectedDirection);
@@ -115,7 +129,7 @@ public class CategoryGraphQLControllerTest {
         final var res = graphql.document(query).execute();
 
         final var actualCategories = res.path("categories")
-                .entityList(ListCategoryOutput.class)
+                .entityList(GqlCategory.class)
                 .get();
 
         // then
@@ -138,10 +152,15 @@ public class CategoryGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWithVariablesWhenCallsListCategoriesShouldReturn() {
         // given
-        final var expectedCategories = List.of(
+        final var categories = List.of(
                 ListCategoryOutput.from(Fixture.Categories.aulas()),
                 ListCategoryOutput.from(Fixture.Categories.lives())
         );
+
+        final var expectedCategories = categories.stream()
+                .map(GqlCategoryPresenter::present)
+                .toList();
+
         final var expectedPage = 0;
         final var expectedPerPage = 10;
         final var expectedSort = "name";
@@ -149,7 +168,7 @@ public class CategoryGraphQLControllerTest {
         final var expectedSearch = "";
 
         Mockito.when(listCategoryUseCase.execute(ArgumentMatchers.any()))
-                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, expectedCategories.size(), expectedCategories));
+                .thenReturn(new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories));
 
         final var query = """
                 query AllCategories($search: String, $page: Int, $perPage: Int, $sort: String, $direction: String){
@@ -157,6 +176,7 @@ public class CategoryGraphQLControllerTest {
                     categories(search: $search, page: $page, perPage: $perPage, sort: $sort, direction: $direction) {
                       id
                       name
+                      description
                     }
                 }
                 """;
@@ -171,7 +191,7 @@ public class CategoryGraphQLControllerTest {
                 .execute();
 
         final var actualCategories = res.path("categories")
-                .entityList(ListCategoryOutput.class)
+                .entityList(GqlCategory.class)
                 .get();
 
         // then

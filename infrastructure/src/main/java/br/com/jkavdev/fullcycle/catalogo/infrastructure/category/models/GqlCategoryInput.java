@@ -4,7 +4,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.category.Category;
 
 import java.time.Instant;
 
-public record CategoryInput(
+public record GqlCategoryInput(
         String id,
         String name,
         String description,
