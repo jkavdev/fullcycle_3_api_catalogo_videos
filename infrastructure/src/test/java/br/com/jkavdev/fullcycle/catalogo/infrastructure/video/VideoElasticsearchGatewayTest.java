@@ -6,7 +6,6 @@ import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.InstantUtils;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Rating;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.persistence.GenreDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoDocument;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.persistence.VideoRepository;
 import org.junit.jupiter.api.Assertions;
@@ -230,6 +229,128 @@ class VideoElasticsearchGatewayTest extends AbstractElasticsearchTest {
         // when
         // then
         Assertions.assertDoesNotThrow(() -> videoGateway.deleteById(expectedId));
+    }
+
+    @Test
+    public void givenVideoPersisted_whenCallsFindById_shouldRetrieveIt() {
+        // given
+        final var expectedId = IdUtils.uniqueId();
+        final var expectedTitle = "System Design Interviews";
+        final var expectedDescription = """
+                Disclaimer: o estudo de caso apresentado tem fins educacionais e representa nossas opiniões pessoais.
+                Esse vídeo faz parte da Imersão Full Stack && Full Cycle.
+                Para acessar todas as aulas, lives e desafios, acesse:
+                https://imersao.fullcycle.com.br/
+                """;
+        final var expectedLaunchedAt = Year.of(2022);
+        final var expectedDuration = 120.10;
+        final var expectedOpened = true;
+        final var expectedPublished = true;
+        final var expectedRating = Rating.L;
+        final var expectedCreatedAt = InstantUtils.now();
+        final var expectedUpdatedAt = InstantUtils.now();
+        final var expectedCategories = Set.of(IdUtils.uniqueId());
+        final var expectedGenres = Set.of(IdUtils.uniqueId());
+        final var expectedMembers = Set.of(IdUtils.uniqueId());
+        final var expectedVideo = "http://video";
+        final var expectedTrailer = "http://trailer";
+        final var expectedBanner = "http://banner";
+        final var expectedThumbnail = "http://thumbnail";
+        final var expectedThumbnailHalf = "http://thumbnailhalf";
+
+        Assertions.assertEquals(0, videoRepository.count());
+
+        videoRepository.save(VideoDocument.from(
+                Video.with(
+                        expectedId,
+                        expectedTitle,
+                        expectedDescription,
+                        expectedLaunchedAt.getValue(),
+                        expectedDuration,
+                        expectedRating.getName(),
+                        expectedOpened,
+                        expectedPublished,
+                        expectedCreatedAt.toString(),
+                        expectedUpdatedAt.toString(),
+                        expectedBanner,
+                        expectedThumbnail,
+                        expectedThumbnailHalf,
+                        expectedTrailer,
+                        expectedVideo,
+                        expectedCategories,
+                        expectedMembers,
+                        expectedGenres
+                )
+        ));
+
+        // when
+        final var actualVideo = videoGateway.findById(expectedId).orElseThrow();
+
+        // then
+        Assertions.assertEquals(expectedId, actualVideo.id());
+        Assertions.assertEquals(expectedCreatedAt, actualVideo.createdAt());
+        Assertions.assertEquals(expectedUpdatedAt, actualVideo.updatedAt());
+        Assertions.assertEquals(expectedTitle, actualVideo.title());
+        Assertions.assertEquals(expectedDescription, actualVideo.description());
+        Assertions.assertEquals(expectedLaunchedAt, actualVideo.launchedAt());
+        Assertions.assertEquals(expectedDuration, actualVideo.duration());
+        Assertions.assertEquals(expectedOpened, actualVideo.opened());
+        Assertions.assertEquals(expectedPublished, actualVideo.published());
+        Assertions.assertEquals(expectedRating, actualVideo.rating());
+        Assertions.assertEquals(expectedCategories, actualVideo.categories());
+        Assertions.assertEquals(expectedGenres, actualVideo.genres());
+        Assertions.assertEquals(expectedMembers, actualVideo.castMembers());
+        Assertions.assertEquals(expectedVideo, actualVideo.video());
+        Assertions.assertEquals(expectedTrailer, actualVideo.trailer());
+        Assertions.assertEquals(expectedBanner, actualVideo.banner());
+        Assertions.assertEquals(expectedThumbnail, actualVideo.thumbnail());
+        Assertions.assertEquals(expectedThumbnailHalf, actualVideo.thumbnailHalf());
+
+    }
+
+    @Test
+    public void givenIdMismatch_whenCallsFindById_shouldBeOk() {
+        // given
+        final var expectedId = "qualquerId";
+
+        Assertions.assertEquals(0, videoRepository.count());
+
+        // when
+        final var actualVideo = videoGateway.findById(expectedId);
+
+        // then
+        Assertions.assertNotNull(actualVideo);
+        Assertions.assertTrue(actualVideo.isEmpty());
+    }
+
+    @Test
+    public void givenNullId_whenCallsFindById_shouldBeOk() {
+        // given
+        final String expectedId = null;
+
+        Assertions.assertEquals(0, videoRepository.count());
+
+        // when
+        final var actualVideo = videoGateway.findById(expectedId);
+
+        // then
+        Assertions.assertNotNull(actualVideo);
+        Assertions.assertTrue(actualVideo.isEmpty());
+    }
+
+    @Test
+    public void givenEmptyId_whenCallsFindById_shouldBeOk() {
+        // given
+        final var expectedId = "  ";
+
+        Assertions.assertEquals(0, videoRepository.count());
+
+        // when
+        final var actualVideo = videoGateway.findById(expectedId);
+
+        // then
+        Assertions.assertNotNull(actualVideo);
+        Assertions.assertTrue(actualVideo.isEmpty());
     }
 
 }

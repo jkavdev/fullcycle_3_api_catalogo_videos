@@ -141,11 +141,11 @@ public class VideoDocument {
                 published(),
                 createdAt(),
                 updatedAt(),
-                video(),
-                trailer(),
                 banner(),
                 thumbnail(),
                 thumbnailHalf(),
+                trailer(),
+                video(),
                 categories(),
                 castMembers(),
                 genres()
