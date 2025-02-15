@@ -199,46 +199,69 @@ public final class Fixture {
         public static Video systemDesign() {
             return Video.with(
                     IdUtils.uniqueId(),
-                    "qualquerTitle",
-                    "qualquerDescricao",
-                    Fixture.year(),
+                    "System Design no Mercado Livre na prática",
+                    "O vídeo mais assistido",
+                    2022,
                     Fixture.duration(),
-                    rating().getName(),
-                    Fixture.bool(),
-                    Fixture.bool(),
+                    Rating.AGE_16.getName(),
+                    true,
+                    true,
                     InstantUtils.now().toString(),
                     InstantUtils.now().toString(),
                     "http://video",
                     "http://trailer",
                     "http://banner",
-                    "http://thumbnail",
-                    "http://thumbnailhalf",
-                    Set.of(IdUtils.uniqueId()),
-                    Set.of(IdUtils.uniqueId()),
-                    Set.of(IdUtils.uniqueId())
+                    "http://thumb",
+                    "http://thumbhalf",
+                    Set.of("aulas"),
+                    Set.of("luiz"),
+                    Set.of("systemdesign")
             );
         }
 
         public static Video java21() {
             return Video.with(
                     IdUtils.uniqueId(),
-                    "Java21",
-                    "qualquerDescricao",
-                    Fixture.year(),
+                    "Java 21",
+                    "Java FTW",
+                    2023,
                     Fixture.duration(),
-                    rating().getName(),
-                    Fixture.bool(),
-                    Fixture.bool(),
+                    Rating.AGE_10.getName(),
+                    true,
+                    true,
                     InstantUtils.now().toString(),
                     InstantUtils.now().toString(),
                     "http://video",
                     "http://trailer",
                     "http://banner",
-                    "http://thumbnail",
-                    "http://thumbnailhalf",
-                    Set.of(IdUtils.uniqueId()),
-                    Set.of(IdUtils.uniqueId()),
-                    Set.of(IdUtils.uniqueId())
+                    "http://thumb",
+                    "http://thumbhalf",
+                    Set.of("lives"),
+                    Set.of("gabriel"),
+                    Set.of("java")
+            );
+        }
+
+        public static Video golang() {
+            return Video.with(
+                    IdUtils.uniqueId(),
+                    "Golang 1.22",
+                    "Um vídeo da linguagem go",
+                    2024,
+                    Fixture.duration(),
+                    Rating.L.getName(),
+                    true,
+                    true,
+                    InstantUtils.now().toString(),
+                    InstantUtils.now().toString(),
+                    "http://video",
+                    "http://trailer",
+                    "http://banner",
+                    "http://thumb",
+                    "http://thumbhalf",
+                    Set.of("meeting"),
+                    Set.of("wesley"),
+                    Set.of("golang")
             );
         }
     }

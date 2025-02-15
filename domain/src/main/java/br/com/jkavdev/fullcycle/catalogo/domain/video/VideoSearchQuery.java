@@ -37,7 +37,7 @@ public record VideoSearchQuery(
 
     @Override
     public Set<String> castMembers() {
-        return castMembers != null ? genres : Set.of();
+        return castMembers != null ? castMembers : Set.of();
     }
 
     @Override
