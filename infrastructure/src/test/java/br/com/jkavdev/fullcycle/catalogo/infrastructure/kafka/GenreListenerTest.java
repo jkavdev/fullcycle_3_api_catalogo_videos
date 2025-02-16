@@ -5,7 +5,7 @@ import br.com.jkavdev.fullcycle.catalogo.application.genre.delete.DeleteGenreUse
 import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GenreGateway;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GenreClient;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreEvent;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
@@ -38,7 +38,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
     private SaveGenreUseCase saveGenreUseCase;
 
     @MockBean
-    private GenreGateway genreGateway;
+    private GenreClient genreClient;
 
     @SpyBean
     private GenreListener genreListener;
@@ -145,7 +145,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(GenreDto.from(business)))
-                .when(genreGateway)
+                .when(genreClient)
                 .genreOfId(ArgumentMatchers.any());
 
         // when
@@ -154,7 +154,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
         // then
-        Mockito.verify(genreGateway, Mockito.times(1)).genreOfId(business.id());
+        Mockito.verify(genreClient, Mockito.times(1)).genreOfId(business.id());
 
         Mockito.verify(saveGenreUseCase, Mockito.times(1)).execute(ArgumentMatchers.refEq(
                 new SaveGenreUseCase.Input(
@@ -188,7 +188,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(GenreDto.from(business)))
-                .when(genreGateway)
+                .when(genreClient)
                 .genreOfId(ArgumentMatchers.any());
 
         // when
@@ -197,7 +197,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
         // then
-        Mockito.verify(genreGateway, Mockito.times(1)).genreOfId(business.id());
+        Mockito.verify(genreClient, Mockito.times(1)).genreOfId(business.id());
 
         Mockito.verify(saveGenreUseCase, Mockito.times(1)).execute(ArgumentMatchers.refEq(
                 new SaveGenreUseCase.Input(
@@ -231,7 +231,7 @@ class GenreListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(business))
-                .when(genreGateway)
+                .when(genreClient)
                 .genreOfId(ArgumentMatchers.any());
 
         // when

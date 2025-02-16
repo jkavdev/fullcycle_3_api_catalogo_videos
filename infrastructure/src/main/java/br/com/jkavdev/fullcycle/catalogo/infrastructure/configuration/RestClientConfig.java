@@ -3,6 +3,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Categories;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Genres;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Keycloak;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.annotations.Videos;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.properties.RestClientProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -34,6 +35,13 @@ public class RestClientConfig {
     }
 
     @Bean
+    @ConfigurationProperties(prefix = "rest-client.videos")
+    @Videos
+    public RestClientProperties videoRestClientProperties() {
+        return new RestClientProperties();
+    }
+
+    @Bean
     @ConfigurationProperties(prefix = "rest-client.keycloak")
     @Keycloak
     public RestClientProperties keycloakRestClientProperties() {
@@ -53,6 +61,15 @@ public class RestClientConfig {
     @Genres
     public RestClient genreHttpClient(
             @Genres final RestClientProperties properties,
+            final ObjectMapper objectMapper
+    ) {
+        return restClient(properties, objectMapper);
+    }
+
+    @Bean
+    @Videos
+    public RestClient videoHttpClient(
+            @Videos final RestClientProperties properties,
             final ObjectMapper objectMapper
     ) {
         return restClient(properties, objectMapper);

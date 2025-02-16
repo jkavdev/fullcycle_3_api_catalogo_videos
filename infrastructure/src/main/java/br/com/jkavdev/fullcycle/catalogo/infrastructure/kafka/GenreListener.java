@@ -3,7 +3,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.delete.DeleteGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.genre.save.SaveGenreUseCase;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GenreGateway;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GenreClient;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GenreEvent;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.Operation;
@@ -29,18 +29,18 @@ public class GenreListener {
     private static final TypeReference<MessageValue<GenreEvent>> GENRE_MESSAGE = new TypeReference<>() {
     };
 
-    private final GenreGateway genreGateway;
+    private final GenreClient genreClient;
 
     private final SaveGenreUseCase saveGenreUseCase;
 
     private final DeleteGenreUseCase deleteGenreUseCase;
 
     public GenreListener(
-            final GenreGateway genreGateway,
+            final GenreClient genreClient,
             final SaveGenreUseCase saveGenreUseCase,
             final DeleteGenreUseCase deleteGenreUseCase
     ) {
-        this.genreGateway = Objects.requireNonNull(genreGateway);
+        this.genreClient = Objects.requireNonNull(genreClient);
         this.saveGenreUseCase = Objects.requireNonNull(saveGenreUseCase);
         this.deleteGenreUseCase = Objects.requireNonNull(deleteGenreUseCase);
     }
@@ -70,7 +70,7 @@ public class GenreListener {
         if (Operation.isDelete(op)) {
             deleteGenreUseCase.execute(new DeleteGenreUseCase.Input(messagePayload.before().id()));
         } else {
-            genreGateway.genreOfId(messagePayload.after().id())
+            genreClient.genreOfId(messagePayload.after().id())
                     .map(it -> new SaveGenreUseCase.Input(
                             it.id(), it.name(), it.isActive(), it.categoriesId(), it.createdAt(), it.updatedAt(), it.deletedAt()
                     ))

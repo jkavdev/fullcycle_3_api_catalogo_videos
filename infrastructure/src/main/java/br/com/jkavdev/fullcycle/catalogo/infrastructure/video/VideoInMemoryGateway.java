@@ -4,6 +4,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.pagination.Pagination;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoGateway;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoSearchQuery;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@Profile("development")
 public class VideoInMemoryGateway implements VideoGateway {
 
     private final ConcurrentHashMap<String, Video> db;

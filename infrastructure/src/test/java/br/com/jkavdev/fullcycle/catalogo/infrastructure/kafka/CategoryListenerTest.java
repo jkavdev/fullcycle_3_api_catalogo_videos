@@ -4,7 +4,7 @@ import br.com.jkavdev.fullcycle.catalogo.AbstractEmbeddedKafkaTest;
 import br.com.jkavdev.fullcycle.catalogo.application.category.delete.DeleteCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.category.save.SaveCategoryUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryGateway;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryClient;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.CategoryEvent;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
@@ -37,7 +37,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
     private SaveCategoryUseCase saveCategoryUseCase;
 
     @MockBean
-    private CategoryGateway categoryGateway;
+    private CategoryClient categoryClient;
 
     @SpyBean
     private CategoryListener categoryListener;
@@ -145,7 +145,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(aulas))
-                .when(categoryGateway)
+                .when(categoryClient)
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
@@ -154,7 +154,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
         // then
-        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
+        Mockito.verify(categoryClient, Mockito.times(1)).categoryOfId(aulas.id());
 
         Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
     }
@@ -178,7 +178,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(aulas))
-                .when(categoryGateway)
+                .when(categoryClient)
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
@@ -187,7 +187,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
         Assertions.assertTrue(latch.await(1, TimeUnit.MINUTES));
 
         // then
-        Mockito.verify(categoryGateway, Mockito.times(1)).categoryOfId(aulas.id());
+        Mockito.verify(categoryClient, Mockito.times(1)).categoryOfId(aulas.id());
 
         Mockito.verify(saveCategoryUseCase, Mockito.times(1)).execute(aulas);
     }
@@ -211,7 +211,7 @@ class CategoryListenerTest extends AbstractEmbeddedKafkaTest {
                 .execute(ArgumentMatchers.any());
 
         Mockito.doReturn(Optional.of(aulas))
-                .when(categoryGateway)
+                .when(categoryClient)
                 .categoryOfId(ArgumentMatchers.any());
 
         // when
