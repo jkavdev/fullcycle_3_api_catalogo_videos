@@ -1,5 +1,7 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models;
 
+import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
+
 import java.util.Set;
 
 public record VideoDto(
@@ -22,4 +24,27 @@ public record VideoDto(
         String createdAt,
         String updatedAt
 ) {
+
+    public static VideoDto from(final Video video) {
+        return new VideoDto(
+                video.id(),
+                video.title(),
+                video.description(),
+                video.launchedAt().getValue(),
+                video.rating().getName(),
+                video.duration(),
+                video.opened(),
+                video.published(),
+                video.banner(),
+                video.thumbnail(),
+                video.thumbnailHalf(),
+                video.trailer(),
+                video.video(),
+                video.categories(),
+                video.castMembers(),
+                video.genres(),
+                video.createdAt().toString(),
+                video.updatedAt().toString()
+        );
+    }
 }
