@@ -53,7 +53,7 @@ public class VideoGraphQLControllerTest {
         );
         final var expectedPage = 0;
         final var expectedPerPage = 10;
-        final var expectedSort = "name";
+        final var expectedSort = "title";
         final var expectedDirection = "asc";
         final var expectedSearch = "";
         final String expectedRating = null;
@@ -168,7 +168,7 @@ public class VideoGraphQLControllerTest {
         );
         final var expectedPage = 0;
         final var expectedPerPage = 10;
-        final var expectedSort = "name";
+        final var expectedSort = "title";
         final var expectedDirection = "asc";
         final var expectedSearch = "";
         final var expectedRating = Rating.L.getName();
@@ -309,7 +309,7 @@ public class VideoGraphQLControllerTest {
 
         final var expectedPage = 0;
         final var expectedPerPage = 10;
-        final var expectedSort = "name";
+        final var expectedSort = "title";
         final var expectedDirection = "asc";
         final var expectedSearch = "";
         final var expectedRating = Rating.L.getName();

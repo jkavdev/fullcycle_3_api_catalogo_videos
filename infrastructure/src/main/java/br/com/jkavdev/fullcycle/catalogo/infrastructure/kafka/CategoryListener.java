@@ -83,7 +83,12 @@ public class CategoryListener {
 
     // em caso de erro
     @DltHandler
-    public void onDLTMessage(@Payload final String payload, final ConsumerRecordMetadata metadata) {
+    public void onDLTMessage(@Payload(required = false) final String payload, final ConsumerRecordMetadata metadata) {
+        if (payload == null) {
+            LOG.info("mensagem vazia recebida do kafka :: partition :: {}, topic :: {}, offset :: {} :::: {}",
+                    metadata.partition(), metadata.topic(), metadata.offset(), payload);
+            return;
+        }
         LOG.info("mensagem recebida do kafka do DLT :: partition :: {}, topic :: {}, offset :: {} :::: {}",
                 metadata.partition(), metadata.topic(), metadata.offset(), payload);
 
