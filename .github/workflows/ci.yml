@@ -25,4 +25,4 @@ jobs:
           distribution: 'adopt'
       # 3. Executar os testes da aplicação
       - name: Run application tests
-        run: ./gradlew test
+        run: chmod +x ./gradlew test
