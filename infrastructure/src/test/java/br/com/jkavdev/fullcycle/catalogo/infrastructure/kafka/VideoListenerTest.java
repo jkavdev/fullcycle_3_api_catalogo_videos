@@ -4,13 +4,17 @@ import br.com.jkavdev.fullcycle.catalogo.AbstractEmbeddedKafkaTest;
 import br.com.jkavdev.fullcycle.catalogo.application.video.delete.DeleteVideoUseCase;
 import br.com.jkavdev.fullcycle.catalogo.application.video.save.SaveVideoUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
+import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.Operation;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.ValuePayload;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.VideoClient;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.ImageResourceDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoEvent;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoResourceDto;
 import org.apache.kafka.clients.admin.TopicListing;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Assertions;
@@ -144,7 +148,7 @@ class VideoListenerTest extends AbstractEmbeddedKafkaTest {
                 .when(saveVideoUseCase)
                 .execute(ArgumentMatchers.any());
 
-        Mockito.doReturn(Optional.of(VideoDto.from(java21)))
+        Mockito.doReturn(Optional.of(videoDto(java21)))
                 .when(videoClient)
                 .videoOfId(ArgumentMatchers.any());
 
@@ -198,7 +202,7 @@ class VideoListenerTest extends AbstractEmbeddedKafkaTest {
                 .when(saveVideoUseCase)
                 .execute(ArgumentMatchers.any());
 
-        Mockito.doReturn(Optional.of(VideoDto.from(java21)))
+        Mockito.doReturn(Optional.of(videoDto(java21)))
                 .when(videoClient)
                 .videoOfId(ArgumentMatchers.any());
 
@@ -265,6 +269,37 @@ class VideoListenerTest extends AbstractEmbeddedKafkaTest {
         Mockito.verify(deleteVideoUseCase, Mockito.times(1)).execute(
                 new DeleteVideoUseCase.Input(java21.id())
         );
+    }
+
+    private static VideoDto videoDto(final Video video) {
+        return new VideoDto(
+                video.id(),
+                video.title(),
+                video.description(),
+                video.launchedAt().getValue(),
+                video.rating().getName(),
+                video.duration(),
+                video.opened(),
+                video.published(),
+                imageResource(video.banner()),
+                imageResource(video.thumbnail()),
+                imageResource(video.thumbnailHalf()),
+                videoResource(video.trailer()),
+                videoResource(video.video()),
+                video.categories(),
+                video.castMembers(),
+                video.genres(),
+                video.createdAt().toString(),
+                video.updatedAt().toString()
+        );
+    }
+
+    private static VideoResourceDto videoResource(final String data) {
+        return new VideoResourceDto(IdUtils.uniqueId(), IdUtils.uniqueId(), data, data, data, "processed");
+    }
+
+    private static ImageResourceDto imageResource(final String data) {
+        return new ImageResourceDto(IdUtils.uniqueId(), IdUtils.uniqueId(), data, data);
     }
 
 }

@@ -2,9 +2,12 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.video;
 
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorException;
+import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.ClientCredentialsManager;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.ImageResourceDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoDto;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoResourceDto;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
@@ -42,11 +45,11 @@ class VideoRestClientTest extends AbstractRestClientTest {
                 java21.duration(),
                 java21.opened(),
                 java21.published(),
-                java21.banner(),
-                java21.thumbnail(),
-                java21.thumbnailHalf(),
-                java21.trailer(),
-                java21.video(),
+                imageResource(java21.banner()),
+                imageResource(java21.thumbnail()),
+                imageResource(java21.thumbnailHalf()),
+                videoResource(java21.trailer()),
+                videoResource(java21.video()),
                 java21.categories(),
                 java21.castMembers(),
                 java21.genres(),
@@ -87,11 +90,11 @@ class VideoRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(java21.categories(), actualVideo.categoriesId());
         Assertions.assertEquals(java21.genres(), actualVideo.genresId());
         Assertions.assertEquals(java21.castMembers(), actualVideo.castMembersId());
-        Assertions.assertEquals(java21.video(), actualVideo.video());
-        Assertions.assertEquals(java21.trailer(), actualVideo.trailer());
-        Assertions.assertEquals(java21.banner(), actualVideo.banner());
-        Assertions.assertEquals(java21.thumbnail(), actualVideo.thumbnail());
-        Assertions.assertEquals(java21.thumbnailHalf(), actualVideo.thumbnailHalf());
+        Assertions.assertEquals(java21.video(), actualVideo.video().encodedLocation());
+        Assertions.assertEquals(java21.trailer(), actualVideo.trailer().encodedLocation());
+        Assertions.assertEquals(java21.banner(), actualVideo.banner().location());
+        Assertions.assertEquals(java21.thumbnail(), actualVideo.thumbnail().location());
+        Assertions.assertEquals(java21.thumbnailHalf(), actualVideo.thumbnailHalf().location());
 
         WireMock.verify(1, WireMock.getRequestedFor(
                 WireMock.urlPathEqualTo("/api/videos/%s".formatted(java21.id())))
@@ -112,11 +115,11 @@ class VideoRestClientTest extends AbstractRestClientTest {
                 java21.duration(),
                 java21.opened(),
                 java21.published(),
-                java21.banner(),
-                java21.thumbnail(),
-                java21.thumbnailHalf(),
-                java21.trailer(),
-                java21.video(),
+                imageResource(java21.banner()),
+                imageResource(java21.thumbnail()),
+                imageResource(java21.thumbnailHalf()),
+                videoResource(java21.trailer()),
+                videoResource(java21.video()),
                 java21.categories(),
                 java21.castMembers(),
                 java21.genres(),
@@ -159,11 +162,11 @@ class VideoRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(java21.categories(), actualVideo.categoriesId());
         Assertions.assertEquals(java21.genres(), actualVideo.genresId());
         Assertions.assertEquals(java21.castMembers(), actualVideo.castMembersId());
-        Assertions.assertEquals(java21.video(), actualVideo.video());
-        Assertions.assertEquals(java21.trailer(), actualVideo.trailer());
-        Assertions.assertEquals(java21.banner(), actualVideo.banner());
-        Assertions.assertEquals(java21.thumbnail(), actualVideo.thumbnail());
-        Assertions.assertEquals(java21.thumbnailHalf(), actualVideo.thumbnailHalf());
+        Assertions.assertEquals(java21.video(), actualVideo.video().encodedLocation());
+        Assertions.assertEquals(java21.trailer(), actualVideo.trailer().encodedLocation());
+        Assertions.assertEquals(java21.banner(), actualVideo.banner().location());
+        Assertions.assertEquals(java21.thumbnail(), actualVideo.thumbnail().location());
+        Assertions.assertEquals(java21.thumbnailHalf(), actualVideo.thumbnailHalf().location());
 
         final var actualCachedValue = cache("admin-videos").get(java21.id());
         Assertions.assertEquals(actualVideo, actualCachedValue.get());
@@ -263,11 +266,11 @@ class VideoRestClientTest extends AbstractRestClientTest {
                 java21.duration(),
                 java21.opened(),
                 java21.published(),
-                java21.banner(),
-                java21.thumbnail(),
-                java21.thumbnailHalf(),
-                java21.trailer(),
-                java21.video(),
+                imageResource(java21.banner()),
+                imageResource(java21.thumbnail()),
+                imageResource(java21.thumbnailHalf()),
+                videoResource(java21.trailer()),
+                videoResource(java21.video()),
                 java21.categories(),
                 java21.castMembers(),
                 java21.genres(),
@@ -383,6 +386,14 @@ class VideoRestClientTest extends AbstractRestClientTest {
         Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
 
         WireMock.verify(expectedRetries, WireMock.getRequestedFor(WireMock.urlPathEqualTo("/api/videos/%s".formatted(expectedId))));
+    }
+
+    private static VideoResourceDto videoResource(final String data) {
+        return new VideoResourceDto(IdUtils.uniqueId(), IdUtils.uniqueId(), data, data, data, "processed");
+    }
+
+    private static ImageResourceDto imageResource(final String data) {
+        return new ImageResourceDto(IdUtils.uniqueId(), IdUtils.uniqueId(), data, data);
     }
 
 }

@@ -162,9 +162,11 @@ public class VideoGraphQLControllerTest {
     @Test
     public void givenCustomArgumentsWhenCallsListVideosShouldReturn() {
         // given
+        final var java21 = Fixture.Videos.java21();
+        final var systemDesign = Fixture.Videos.systemDesign();
         final var expectedVideos = List.of(
-                ListVideoUseCase.Output.from(Fixture.Videos.java21()),
-                ListVideoUseCase.Output.from(Fixture.Videos.systemDesign())
+                ListVideoUseCase.Output.from(java21),
+                ListVideoUseCase.Output.from(systemDesign)
         );
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -287,6 +289,34 @@ public class VideoGraphQLControllerTest {
         Assertions.assertEquals(expectedCastMembers, actualQuery.castMembers());
         Assertions.assertEquals(expectedCategories, actualQuery.categories());
         Assertions.assertEquals(expectedGenres, actualQuery.genres());
+
+        Mockito.verify(getAllCastMemberByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(java21.castMembers(), actual.ids())
+                ));
+        Mockito.verify(getAllCastMemberByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(systemDesign.castMembers(), actual.ids())
+                ));
+
+        Mockito.verify(getAllCategoryByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(java21.categories(), actual.ids())
+                ));
+        Mockito.verify(getAllCategoryByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(systemDesign.categories(), actual.ids())
+                ));
+
+        Mockito.verify(getAllGenreByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(java21.genres(), actual.ids())
+                ));
+        Mockito.verify(getAllGenreByIdUseCase, Mockito.times(1))
+                .execute(ArgumentMatchers.argThat(
+                        actual -> Objects.equals(systemDesign.genres(), actual.ids())
+                ));
+
     }
 
     @Test

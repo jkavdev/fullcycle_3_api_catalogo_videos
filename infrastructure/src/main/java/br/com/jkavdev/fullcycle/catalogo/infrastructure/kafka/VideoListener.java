@@ -6,7 +6,9 @@ import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.MessageValue;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.kafka.models.connect.Operation;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.VideoClient;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.ImageResourceDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoEvent;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoResourceDto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +89,11 @@ public class VideoListener {
                             it.published(),
                             it.createdAt(),
                             it.updatedAt(),
-                            it.video(),
-                            it.trailer(),
-                            it.banner(),
-                            it.thumbnail(),
-                            it.thumbnailHalf(),
+                            it.getVideo().map(VideoResourceDto::encodedLocation).orElse(""),
+                            it.getTrailer().map(VideoResourceDto::encodedLocation).orElse(""),
+                            it.getBanner().map(ImageResourceDto::location).orElse(""),
+                            it.getThumbnail().map(ImageResourceDto::location).orElse(""),
+                            it.getThumbnailHalf().map(ImageResourceDto::location).orElse(""),
                             it.categoriesId(),
                             it.castMembersId(),
                             it.genresId()

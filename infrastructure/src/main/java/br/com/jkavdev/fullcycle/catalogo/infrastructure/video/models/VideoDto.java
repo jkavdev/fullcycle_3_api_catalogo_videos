@@ -1,7 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models;
 
-import br.com.jkavdev.fullcycle.catalogo.domain.video.Video;
-
+import java.util.Optional;
 import java.util.Set;
 
 public record VideoDto(
@@ -13,11 +12,11 @@ public record VideoDto(
         Double duration,
         boolean opened,
         boolean published,
-        String banner,
-        String thumbnail,
-        String thumbnailHalf,
-        String trailer,
-        String video,
+        ImageResourceDto banner,
+        ImageResourceDto thumbnail,
+        ImageResourceDto thumbnailHalf,
+        VideoResourceDto trailer,
+        VideoResourceDto video,
         Set<String> categoriesId,
         Set<String> castMembersId,
         Set<String> genresId,
@@ -25,26 +24,24 @@ public record VideoDto(
         String updatedAt
 ) {
 
-    public static VideoDto from(final Video video) {
-        return new VideoDto(
-                video.id(),
-                video.title(),
-                video.description(),
-                video.launchedAt().getValue(),
-                video.rating().getName(),
-                video.duration(),
-                video.opened(),
-                video.published(),
-                video.banner(),
-                video.thumbnail(),
-                video.thumbnailHalf(),
-                video.trailer(),
-                video.video(),
-                video.categories(),
-                video.castMembers(),
-                video.genres(),
-                video.createdAt().toString(),
-                video.updatedAt().toString()
-        );
+    public Optional<VideoResourceDto> getVideo() {
+        return Optional.ofNullable(video);
     }
+
+    public Optional<VideoResourceDto> getTrailer() {
+        return Optional.ofNullable(trailer);
+    }
+
+    public Optional<ImageResourceDto> getBanner() {
+        return Optional.ofNullable(banner);
+    }
+
+    public Optional<ImageResourceDto> getThumbnail() {
+        return Optional.ofNullable(thumbnail);
+    }
+
+    public Optional<ImageResourceDto> getThumbnailHalf() {
+        return Optional.ofNullable(thumbnailHalf);
+    }
+
 }
