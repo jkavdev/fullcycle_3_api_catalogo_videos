@@ -13,7 +13,6 @@ graphql:
 
 kafka:
   auto-create-topics: false
-  bootstrap-servers: localhost:9092
   pool-timeout: 1_000
   consumers:
     categories:
@@ -62,11 +61,6 @@ rest-client:
     base-url: "${keycloak.host}/realms/${keycloak.realm}"
     read-timeout: 1_000
 
-logging:
-  level:
-    ROOT: INFO
-    br.com.jkavdev.fullcycle.catalogo: DEBUG
-
 server:
   port: 8080
   servlet:
@@ -95,6 +89,8 @@ spring:
   graphql:
     graphiql:
       enabled: ${graphql.graphiql}
+  kafka:
+    bootstrap-servers: ${kafka.bootstrap-servers} # o spring fornecera a configuracao, configurando admin client, os consumers, do jeito que tava, apenas configurava os consumers
   servlet:
     multipart:
       max-file-size: 10GB # definindo o tamanho maximo de um arquivo
