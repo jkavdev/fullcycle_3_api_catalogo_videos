@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Rating {
+
     ER("ER"),
     L("L"),
     AGE_10("10"),
@@ -14,7 +15,7 @@ public enum Rating {
 
     private final String name;
 
-    Rating(String name) {
+    Rating(final String name) {
         this.name = name;
     }
 

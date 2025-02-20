@@ -52,15 +52,7 @@ public class Genre {
             final Instant updatedAt,
             final Instant deletedAt
     ) {
-        return new Genre(
-                id,
-                name,
-                active,
-                categories,
-                createdAt,
-                updatedAt,
-                deletedAt
-        );
+        return new Genre(id, name, active, categories, createdAt, updatedAt, deletedAt);
     }
 
     public static Genre with(final Genre aGenre) {
@@ -88,55 +80,27 @@ public class Genre {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String name() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean active() {
         return active;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
     public Set<String> categories() {
         return categories;
-    }
-
-    public void setCategories(Set<String> categories) {
-        this.categories = categories;
     }
 
     public Instant createdAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Instant updatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Instant deletedAt() {
         return deletedAt;
-    }
-
-    public void setDeletedAt(Instant deletedAt) {
-        this.deletedAt = deletedAt;
     }
 }
