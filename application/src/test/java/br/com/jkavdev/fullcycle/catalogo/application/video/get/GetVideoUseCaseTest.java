@@ -5,6 +5,7 @@ import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.video.VideoGateway;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -17,7 +18,7 @@ public class GetVideoUseCaseTest extends UseCaseTest {
     private GetVideoUseCase useCase;
 
     @Mock
-    VideoGateway videoGateway;
+    private VideoGateway videoGateway;
 
     @Test
     public void givenValidVideo_whenCallsGet_shouldReturnIt() {
@@ -33,6 +34,9 @@ public class GetVideoUseCaseTest extends UseCaseTest {
                 .orElseThrow();
 
         // then
+        Mockito.verify(videoGateway, Mockito.times(1))
+                .findById(ArgumentMatchers.eq(expectedVideo.id()));
+
         Assertions.assertEquals(expectedVideo.id(), actualOutput.id());
         Assertions.assertEquals(expectedVideo.createdAt().toString(), actualOutput.createdAt());
         Assertions.assertEquals(expectedVideo.updatedAt().toString(), actualOutput.updatedAt());
@@ -62,6 +66,9 @@ public class GetVideoUseCaseTest extends UseCaseTest {
         final var actualVideo = Assertions.assertDoesNotThrow(() -> useCase.execute(expectedInput));
 
         // then
+        Mockito.verify(videoGateway, Mockito.never())
+                .deleteById(ArgumentMatchers.any());
+
         Assertions.assertTrue(actualVideo.isEmpty());
 
     }
@@ -76,6 +83,9 @@ public class GetVideoUseCaseTest extends UseCaseTest {
                 Assertions.assertDoesNotThrow(() -> useCase.execute(new GetVideoUseCase.Input(expectedId)));
 
         // then
+        Mockito.verify(videoGateway, Mockito.never())
+                .deleteById(ArgumentMatchers.any());
+
         Assertions.assertTrue(actualVideo.isEmpty());
 
     }

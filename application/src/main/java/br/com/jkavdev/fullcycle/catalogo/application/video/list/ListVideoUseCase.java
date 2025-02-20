@@ -14,8 +14,8 @@ public class ListVideoUseCase extends UseCase<ListVideoUseCase.Input, Pagination
 
     private final VideoGateway videoGateway;
 
-    public ListVideoUseCase(final VideoGateway genreGateway) {
-        this.videoGateway = Objects.requireNonNull(genreGateway);
+    public ListVideoUseCase(final VideoGateway videoGateway) {
+        this.videoGateway = Objects.requireNonNull(videoGateway);
     }
 
     @Override

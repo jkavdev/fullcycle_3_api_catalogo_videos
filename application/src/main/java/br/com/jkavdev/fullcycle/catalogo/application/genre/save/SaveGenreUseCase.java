@@ -30,7 +30,7 @@ public class SaveGenreUseCase extends UseCase<SaveGenreUseCase.Input, SaveGenreU
                 input.categories(),
                 input.createdAt(),
                 input.updatedAt(),
-                input.createdAt()
+                input.deletedAt()
         );
 
         genreGateway.save(aGenre);
@@ -50,10 +50,7 @@ public class SaveGenreUseCase extends UseCase<SaveGenreUseCase.Input, SaveGenreU
 
     }
 
-    public record Output(
-            String id
-    ) {
+    public record Output(String id) {
 
     }
-
 }
