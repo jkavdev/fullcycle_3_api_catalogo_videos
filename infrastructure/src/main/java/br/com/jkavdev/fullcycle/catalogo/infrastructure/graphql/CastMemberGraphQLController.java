@@ -6,9 +6,11 @@ import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMemberPresenter;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMemberDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.security.Roles;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class CastMemberGraphQLController {
     }
 
     @QueryMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_CAST_MEMBERS})
     public List<GqlCastMember> castMembers(
             @Argument final String search,
             @Argument final int page,
@@ -46,6 +49,7 @@ public class CastMemberGraphQLController {
     }
 
     @MutationMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_CAST_MEMBERS})
     public GqlCastMember saveCastMember(@Argument final GqlCastMemberDto input) {
         return GqlCastMemberPresenter.present(saveCastMemberUseCase.execute(input.toCastMember()));
     }

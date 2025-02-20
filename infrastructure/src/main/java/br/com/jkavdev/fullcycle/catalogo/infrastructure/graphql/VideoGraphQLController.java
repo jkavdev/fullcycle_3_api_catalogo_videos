@@ -9,6 +9,7 @@ import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMember
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.GqlCategoryPresenter;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategory;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.security.Roles;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GqlGenrePresenter;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.models.GqlGenre;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.GqlVideoPresenter;
@@ -18,6 +19,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -52,6 +54,7 @@ public class VideoGraphQLController {
     }
 
     @QueryMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_VIDEOS})
     public List<GqlVideo> videos(
             @Argument final String search,
             @Argument final int page,
@@ -75,6 +78,7 @@ public class VideoGraphQLController {
     }
 
     @SchemaMapping(typeName = "Video", field = "castMembers")
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_VIDEOS})
     public List<GqlCastMember> castMembers(final GqlVideo video) {
         return getAllCastMemberByIdUseCase.execute(
                         new GetAllCastMemberByIdUseCase.Input(video.castMembersId())
@@ -84,6 +88,7 @@ public class VideoGraphQLController {
     }
 
     @SchemaMapping(typeName = "Video", field = "categories")
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_VIDEOS})
     public List<GqlCategory> categories(final GqlVideo video) {
         return getAllCategoryByIdUseCase.execute(
                         new GetAllCategoryByIdUseCase.Input(video.categoriesId())
@@ -93,6 +98,7 @@ public class VideoGraphQLController {
     }
 
     @SchemaMapping(typeName = "Video", field = "genres")
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_VIDEOS})
     public List<GqlGenre> genres(final GqlVideo video) {
         return getAllGenreByIdUseCase.execute(
                         new GetAllGenreByIdUseCase.Input(video.genresId())
@@ -102,6 +108,7 @@ public class VideoGraphQLController {
     }
 
     @MutationMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_VIDEOS})
     public SaveVideoUseCase.Output saveVideo(@Argument(name = "input") final GqlVideoInput videoInput) {
         final var input = new SaveVideoUseCase.Input(
                 videoInput.id(),

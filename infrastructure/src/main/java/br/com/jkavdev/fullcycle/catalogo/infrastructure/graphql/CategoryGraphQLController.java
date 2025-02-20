@@ -6,9 +6,11 @@ import br.com.jkavdev.fullcycle.catalogo.domain.category.CategorySearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.GqlCategoryPresenter;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategoryInput;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.models.GqlCategory;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.security.Roles;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -30,6 +32,7 @@ public class CategoryGraphQLController {
     }
 
     @QueryMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_CATEGORIES})
     public List<GqlCategory> categories(
             @Argument final String search,
             @Argument final int page,
@@ -46,6 +49,7 @@ public class CategoryGraphQLController {
     }
 
     @MutationMapping
+    @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_CATEGORIES})
     public GqlCategory saveCategory(@Argument final GqlCategoryInput input) {
         return GqlCategoryPresenter.present(saveCategoryUseCase.execute(input.toCategory()));
     }
