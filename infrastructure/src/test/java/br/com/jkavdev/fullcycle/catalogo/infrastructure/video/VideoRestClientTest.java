@@ -3,7 +3,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.video;
 import br.com.jkavdev.fullcycle.catalogo.domain.Fixture;
 import br.com.jkavdev.fullcycle.catalogo.domain.exceptions.InternalErrorException;
 import br.com.jkavdev.fullcycle.catalogo.domain.utils.IdUtils;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
+import br.com.jkavdev.fullcycle.catalogo.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication.ClientCredentialsManager;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.ImageResourceDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.video.models.VideoDto;
@@ -293,7 +293,7 @@ class VideoRestClientTest extends AbstractRestClientTest {
                                 WireMock.aResponse()
                                         .withStatus(200)
                                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                        .withFixedDelay(600)
+                                        .withFixedDelay(1100)
                                         .withBody(responseBody)
                         )
         );

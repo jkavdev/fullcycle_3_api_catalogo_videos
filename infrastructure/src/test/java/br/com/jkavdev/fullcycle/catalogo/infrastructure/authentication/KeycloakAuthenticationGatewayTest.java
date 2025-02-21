@@ -1,6 +1,6 @@
 package br.com.jkavdev.fullcycle.catalogo.infrastructure.authentication;
 
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.AbstractRestClientTest;
+import br.com.jkavdev.fullcycle.catalogo.AbstractRestClientTest;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.json.Json;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.jupiter.api.Assertions;

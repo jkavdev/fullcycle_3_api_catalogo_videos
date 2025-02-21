@@ -3,7 +3,7 @@ package br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.propertie
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 @ConfigurationProperties(prefix = "keycloak")
 public class KeycloakProperties {
 

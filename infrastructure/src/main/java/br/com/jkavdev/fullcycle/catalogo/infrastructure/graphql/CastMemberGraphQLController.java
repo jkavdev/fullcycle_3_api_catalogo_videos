@@ -4,8 +4,8 @@ import br.com.jkavdev.fullcycle.catalogo.application.castmember.list.ListCastMem
 import br.com.jkavdev.fullcycle.catalogo.application.castmember.save.SaveCastMemberUseCase;
 import br.com.jkavdev.fullcycle.catalogo.domain.castmember.CastMemberSearchQuery;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.GqlCastMemberPresenter;
-import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMemberDto;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMember;
+import br.com.jkavdev.fullcycle.catalogo.infrastructure.castmember.models.GqlCastMemberInput;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.security.Roles;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -50,8 +50,7 @@ public class CastMemberGraphQLController {
 
     @MutationMapping
     @Secured({Roles.ROLE_ADMIN, Roles.ROLE_SUBSCRIBER, Roles.ROLE_CAST_MEMBERS})
-    public GqlCastMember saveCastMember(@Argument final GqlCastMemberDto input) {
-        return GqlCastMemberPresenter.present(saveCastMemberUseCase.execute(input.toCastMember()));
+    public GqlCastMember saveCastMember(@Argument final GqlCastMemberInput input) {
+        return GqlCastMemberPresenter.present(this.saveCastMemberUseCase.execute(input.toCastMember()));
     }
-
 }

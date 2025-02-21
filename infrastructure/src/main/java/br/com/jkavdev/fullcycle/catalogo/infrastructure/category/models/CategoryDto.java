@@ -14,6 +14,7 @@ public record CategoryDto(
         Instant deletedAt
 ) {
 
+    @Override
     public Boolean isActive() {
         return isActive != null ? isActive : true;
     }

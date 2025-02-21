@@ -1,6 +1,5 @@
-package br.com.jkavdev.fullcycle.catalogo.infrastructure;
+package br.com.jkavdev.fullcycle.catalogo;
 
-import br.com.jkavdev.fullcycle.catalogo.IntegrationTestConfiguration;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.category.CategoryRestClient;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.configuration.WebServerConfig;
 import br.com.jkavdev.fullcycle.catalogo.infrastructure.genre.GenreRestClient;

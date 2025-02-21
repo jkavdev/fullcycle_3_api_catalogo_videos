@@ -57,7 +57,7 @@ public class CastMemberElasticsearchGateway implements CastMemberGateway {
     }
 
     @Override
-    public List<CastMember> findAllById(Set<String> ids) {
+    public List<CastMember> findAllById(final Set<String> ids) {
         if (ids == null || ids.isEmpty()) {
             return Collections.emptyList();
         }
